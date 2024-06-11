@@ -10,6 +10,7 @@ SRCS = bootloader.c
 all: 
 	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET).bin 
 	$(OBJCOPY) -j .text -j .data -O ihex $(TARGET).bin $(TARGET).hex
+	avr-size $(TARGET).hex
 
 flash:
 	avrdude -p $(MCU) -c usbasp -P $(PORT) -U flash:w:$(TARGET).hex:i -F -v

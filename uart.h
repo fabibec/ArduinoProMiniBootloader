@@ -1,5 +1,8 @@
 #ifndef UART_H_
 #define UART_H_
+/*
+	This file contains all the stuff we need for the serial communication
+*/
 
 #include <avr/interrupt.h>
 #include <util/delay.h>
