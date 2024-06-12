@@ -47,6 +47,7 @@ ISR(TIMER1_OVF_vect){
 uint8_t dataLength;
 uint16_t pageAddress;
 uint8_t recordType;
+// Why limit to 16 Bytes? Lenght is 2 Hex Characters, so 16 * 16 = 256 Bytes
 uint8_t data[16];
 uint8_t dataIndex;
 uint8_t checksum;
@@ -105,7 +106,7 @@ int main(){
                     byteSum = 0;
                     state = GET_DATA_LENGTH;
                 }    
-            break;
+                break;
             case GET_DATA_LENGTH:
                 hexBuffer[bytesReceived++] = c;
                 if(bytesReceived == 2){
@@ -120,7 +121,7 @@ int main(){
                     bytesReceived = 0;
                     state = GET_ADDRESS;
                 }
-            break;
+                break;
             case GET_ADDRESS:
                 hexBuffer[bytesReceived++] = c;
                 if(bytesReceived == 4){
@@ -139,7 +140,7 @@ int main(){
                     bytesReceived = 0;
                     state = GET_RECORD_TYPE;
                 }
-            break;
+              break;
             case GET_RECORD_TYPE:
                 hexBuffer[bytesReceived++] = c;
                 if(bytesReceived == 2){
@@ -156,7 +157,7 @@ int main(){
                         state = GET_DATA;
                     }                   
                 }
-            break;
+              break;
             case GET_DATA:
                 hexBuffer[bytesReceived++] = c;
                 if(dataIndex == dataLength){
@@ -171,7 +172,7 @@ int main(){
                     byteSum += data[dataIndex];
                     dataIndex++;
                 }
-            break;
+              break;
             case GET_CHECKSUM:
                 hexBuffer[bytesReceived++] = c;
                 if(bytesReceived == 2){
@@ -186,7 +187,7 @@ int main(){
                     snprintf(msg, 70, "calculated %u, received %u", (uint16_t) byteSum, (uint16_t) checksum);
                     sendString(msg);
 
-                    // 
+                    // Problem wenn Zeile nicht eine komplette Page füllt !!!
                     //programFlash();
                     sendString("TODO: Program Flash");
 
