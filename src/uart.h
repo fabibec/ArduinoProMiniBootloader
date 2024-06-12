@@ -20,6 +20,7 @@ void send_xon();
 void send_xoff();
 void sendCRLF();
 void sendString(char * string);
+void clearScreen();
 
 volatile uint8_t receiveBuffer[32] = {0};
 volatile uint8_t lastReceived = 0;
@@ -84,7 +85,7 @@ void uart_deinit() {
 	UCSR0B = 0x0;
 }
 
-bool bufferEmpty() {
+uint8_t bufferEmpty() {
 	return (!counter);
 }
 
