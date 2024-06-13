@@ -89,7 +89,7 @@ int main(){
     TIMSK1 = 0x0;
 
     // Receive program data from serial
-    sendString("Please enter .hex code, new version");
+    sendString("Please enter .hex code");
     sendCRLF();
     
     // Wait for starting character
@@ -111,11 +111,11 @@ int main(){
                 uart_send(c);
                 if(bytesReceived == 2){
                     // Decode data length
-                    dataLength = (uint8_t) hexDec(hexBuffer, 2);
+                    dataLength = (uint8_t) hexDec(hexBuffer, 2); 
                     char msg[100];
-                    snprintf(msg, 100, "rt %u", dataLength);
+                    snprintf(msg, 100, "dataLength %u", (uint8_t) dataLength);
                     sendString(msg);
-                    sendCRLF();   
+                    sendCRLF();
 
                     // Add up Bytes for checksum
                     byteSum += dataLength;
@@ -131,14 +131,21 @@ int main(){
                 if(bytesReceived == 4){
                     // Decode absolute page address
                     pageAddress = hexDec(hexBuffer, 16);
+                    char msg[100];
+                    snprintf(msg, 100, "Address %hu", (uint16_t) pageAddress);
+                    sendString(msg);
+                    sendCRLF();
                     
                     // Update Checksum
                     byteSum += (uint8_t) pageAddress;
-                    byteSum += (uint8_t) (pageAddress >> 4);
+                    byteSum += (uint8_t) (pageAddress >> 8);
                     
                     // Calculate relative page address
-                    pageAddress = pageAddress % SPM_PAGESIZE;
-                    
+                    pageAddress = pageAddress - (pageAddress % SPM_PAGESIZE);
+                    snprintf(msg, 100, "Address %d", pageAddress);
+                    sendString(msg);
+                    sendCRLF();
+
                     // Reset for next state
                     bytesReceived = 0;
                     state = GET_RECORD_TYPE;
@@ -198,12 +205,13 @@ int main(){
                     // Calculate checksum -> build 2th's complement and check for equality
                     byteSum = ~byteSum + 1;
 
-                    // 
-                    //programFlash();
                     //sendString("TODO: Program Flash");
                     /*
                         z.B.
+                        send_XOFF();
+                        _delay_ms(5);
                         boot_program_page(pageAddress, data)
+                        send_XON();
                     */
 
                     /* Debug printf */
@@ -225,7 +233,7 @@ void runProgram(){
     //uint8_t temp = MCUCR;
     //MCUCR = temp | (1 << IVCE);
     //MCUCR = temp & ~(1 << IVSEL);
-    sendString("Starting program...");
+    //endString("Starting program...");
     
     _delay_ms(100);
 
