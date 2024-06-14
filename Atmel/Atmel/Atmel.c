@@ -57,6 +57,8 @@ uint8_t hexBuffer[4] = {0};
 uint8_t byteSum;
 uint8_t state = WAIT_FOR_START;
 
+uint16_t currentPage = 0;
+
 int main(){
     // Disable interrupts just to be sure
     //cli();
@@ -139,6 +141,12 @@ int main(){
                     // Calculate relative page address
                     pageAddress = pageAddress / SPM_PAGESIZE;
 
+                    if(pageAddress != currentPage){
+                        programFlash();
+                        // TODO: Hier können lücken entstehen !!! && hier den dataIndex auf richtige addresse setzen!!!
+                        currentPage = pageAddress;
+                    }
+
                     // Reset for next state
                     bytesReceived = 0;
                     state = GET_RECORD_TYPE;
@@ -212,6 +220,7 @@ int main(){
 					
 					if(dataIndex == SPM_PAGESIZE || recordType == EOF_RECORD){
 						programFlash();
+                        currentPage++;
 					}
 
                     /*
@@ -267,6 +276,8 @@ void programFlash(){
 	char msg[200];
 	
 	// Fill the buffer with padding if EOF received
+    // TODO
+    // Not only for EOF but for every Page ??? 
 	if(recordType == EOF_RECORD){
 		snprintf(msg, 200, "DataIndex %u ", dataIndex);
 		sendString(msg);
