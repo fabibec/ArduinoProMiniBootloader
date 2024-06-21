@@ -7,7 +7,7 @@
 #include <util/delay.h>
 
 #include "uart.h"
-#include <stdio.h>
+//#include <stdio.h>
 
 #define WAIT_FOR_START 1
 #define GET_DATA_LENGTH 2
@@ -16,6 +16,7 @@
 #define GET_DATA 5
 #define GET_CHECKSUM 6
 #define CHECKSUM_ERROR 7
+#define FLASH_PAGE 8
 
 #define DATA_RECORD 0
 #define EOF_RECORD 1
@@ -28,6 +29,8 @@ uint16_t hexDec(uint8_t *bytes, uint8_t num);
 void programFlash();
 /* Write page into program flash */
 void boot_program_page(uint16_t page, uint8_t *buf);
+
+void resetDataBuffer();
 
 
 
@@ -50,6 +53,7 @@ uint16_t pageAddress;
 uint8_t recordType;
 uint8_t data[128];
 uint8_t dataIndex = 0;
+uint8_t currentDataLength = 0;
 uint8_t checksum;
 
 uint8_t bytesReceived = 0;
@@ -87,8 +91,6 @@ int main(){
 	
     if(c != 'p'){
         runProgram();
-		sendString("I was in runProgramm!");
-		sendCRLF();
     }
 
     // Disable Timer
@@ -97,7 +99,10 @@ int main(){
     // Receive program data from serial
     sendString("Please enter .hex code");
     sendCRLF();
-    
+	
+	// Initialize Data Buffer
+	resetDataBuffer();
+	
     // Wait for starting character
     while(1){
         while(!(c = uart_receive())) ;
@@ -139,12 +144,13 @@ int main(){
                     byteSum += (uint8_t) (pageAddress >> 8);
                     
                     // Calculate relative page address
-                    pageAddress = pageAddress / SPM_PAGESIZE;
+                    uint16_t pageNumber = pageAddress / SPM_PAGESIZE;
 
-                    if(pageAddress != currentPage){
+                    if(pageNumber != currentPage){
                         programFlash();
                         // TODO: Hier können lücken entstehen !!! && hier den dataIndex auf richtige addresse setzen!!!
-                        currentPage = pageAddress;
+                        currentPage = pageNumber;
+						dataIndex = pageAddress % SPM_PAGESIZE;
                     }
 
                     // Reset for next state
@@ -177,21 +183,19 @@ int main(){
                         data[dataIndex] = (uint8_t) hexDec(hexBuffer, 2);
                         byteSum += data[dataIndex];
                         
-                        // calculate bound
-						uint8_t localBound = (dataIndex % 16) + 1;		
-						
+                        currentDataLength++;	
 						dataIndex++;
+						
 						bytesReceived = 0;
 						
-                        if(localBound == dataLength){
-							/*
-                            // Fill the rest of the buffer if needed -> we try to fill the buffer in 16 Byte Steps
-                            for(uint8_t i = dataLength; i < 16; i++){
-                                data[dataIndex++] = 0xFF;
-                            }
-							*/
-
+						if (dataIndex == 128) {
+							programFlash();
+							currentPage++;
+						}
+						
+                        if(currentDataLength == dataLength){
                             // Go to the next state
+							currentDataLength = 0;
                             state = GET_CHECKSUM;
                         }
                     }
@@ -211,37 +215,29 @@ int main(){
                     byteSum = ~byteSum + 1;
 					
 					if(byteSum != checksum){
-						char msg[75];
-						snprintf(msg, 75, "calc: %u, act: %u", byteSum, checksum);
-						sendString(msg);
+						//char msg[75];
+						//snprintf(msg, 75, "calc: %u, act: %u", byteSum, checksum);
+						//sendString(msg);
 						sendString("Checksum mismatch. Please Reset!");
-						_delay_ms(10000);
+						state = WAIT_FOR_START;
 					}
 					
-					if(dataIndex == SPM_PAGESIZE || recordType == EOF_RECORD){
-						programFlash();
-                        currentPage++;
+					// If dataIndex == 0 -> page is empty -> no need to flash
+					if(recordType == EOF_RECORD && dataIndex != 0){
+						programFlash();  
 					}
 
-                    /*
-                        z.B.
-                        send_XOFF();
-                        _delay_ms(5);
-                        boot_program_page(pageAddress, data)
-                        send_XON();
-                    */
-
-                    /* Debug printf */
+                    /* Debug printf 
                     char msg[200];
 					sendCRLF();
                     snprintf(msg, 200, "Len: %u, Adr: %u, RecType: %u, DataIndex: %u", dataLength, pageAddress, recordType, dataIndex);
                     sendString(msg);
-                    sendCRLF();
+                    sendCRLF();*/
                     
                     bytesReceived = 0;
                     state = WAIT_FOR_START;
                     sendCRLF();
-                }
+                }		
         }
     }
 }
@@ -259,6 +255,8 @@ void runProgram(){
     TCCR1B = 0x0;
     TCNT1 = 0x0;
     TIMSK1 = 0x0;
+	
+	sendString("Starting program...");
 
     /*
     // Reset Uart
@@ -273,33 +271,33 @@ void runProgram(){
 }
 
 void programFlash(){
-	char msg[200];
+	//char msg[200];
 	
 	// Fill the buffer with padding if EOF received
     // TODO
-    // Not only for EOF but for every Page ??? 
-	if(recordType == EOF_RECORD){
-		snprintf(msg, 200, "DataIndex %u ", dataIndex);
-		sendString(msg);
-		for(uint8_t i = dataIndex; i < SPM_PAGESIZE; i++){
-			data[i] = 0xFF;
-			snprintf(msg, 200, "Setting %u ", i);
-			sendString(msg);
-			sendCRLF();
-		}
-	}
-	// Print
-	
-	sendCRLF();
-	snprintf(msg, 200, "Printing page %d", pageAddress);
-	sendString(msg);
-	sendCRLF();
-	for(uint8_t i = 0; i < SPM_PAGESIZE; i++){
-		snprintf(msg, 200, "%x ", data[i]);
-		sendString(msg);
+	//sendCRLF();
+	//snprintf(msg, 200, "Printing page %d", currentPage);
+	//sendString(msg);
+	//sendCRLF();
+	/*for(uint8_t i = 0; i < SPM_PAGESIZE; i++){
+		//snprintf(msg, 200, "%x ", data[i]);
+		//sendString(msg);
 		if(i % 16 == 0) {sendCRLF();}
-	}
+	}*/
+	
+	send_xoff();
+	_delay_ms(20);
+	boot_program_page(currentPage, data);
+	send_xon();
+	
 	dataIndex = 0;
+	resetDataBuffer();
+}
+
+void resetDataBuffer() {
+	for (uint8_t i = 0; i < SPM_PAGESIZE; i++) {
+		data[i] = 0xFF;
+	}
 }
 
 void boot_program_page(uint16_t page, uint8_t *buf){
