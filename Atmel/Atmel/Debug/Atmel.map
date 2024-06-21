@@ -26,10 +26,6 @@ Discarded input sections
  .bss           0x00000000        0x0 Atmel.o
  .text.bufferEmpty
                 0x00000000        0xc Atmel.o
- .text.uart_deinit
-                0x00000000       0x12 Atmel.o
- .text.boot_program_page
-                0x00000000       0x7e Atmel.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
@@ -104,6 +100,7 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libm.a
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a
 END GROUP
+Address of section .text set to 0x7000
 
 .hash
  *(.hash)
@@ -195,49 +192,49 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x5f8
+.text           0x00007000      0x6c6
  *(.vectors)
- .vectors       0x00000000       0x68 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
-                0x00000000                __vector_default
-                0x00000000                __vectors
+ .vectors       0x00007000       0x68 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
+                0x00007000                __vector_default
+                0x00007000                __vectors
  *(.vectors)
  *(.progmem.gcc*)
-                0x00000068                . = ALIGN (0x2)
-                0x00000068                __trampolines_start = .
+                0x00007068                . = ALIGN (0x2)
+                0x00007068                __trampolines_start = .
  *(.trampolines)
- .trampolines   0x00000068        0x0 linker stubs
+ .trampolines   0x00007068        0x0 linker stubs
  *(.trampolines*)
-                0x00000068                __trampolines_end = .
+                0x00007068                __trampolines_end = .
  *(.progmem*)
-                0x00000068                . = ALIGN (0x2)
+                0x00007068                . = ALIGN (0x2)
  *(.jumptables)
  *(.jumptables*)
  *(.lowtext)
  *(.lowtext*)
-                0x00000068                __ctors_start = .
+                0x00007068                __ctors_start = .
  *(.ctors)
-                0x00000068                __ctors_end = .
-                0x00000068                __dtors_start = .
+                0x00007068                __ctors_end = .
+                0x00007068                __dtors_start = .
  *(.dtors)
-                0x00000068                __dtors_end = .
+                0x00007068                __dtors_end = .
  SORT(*)(.ctors)
  SORT(*)(.dtors)
  *(.init0)
- .init0         0x00000068        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
-                0x00000068                __init
+ .init0         0x00007068        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
+                0x00007068                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x00000068        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
+ .init2         0x00007068        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
  *(.init2)
  *(.init3)
  *(.init3)
  *(.init4)
- .init4         0x00000074       0x16 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_copy_data.o)
-                0x00000074                __do_copy_data
- .init4         0x0000008a       0x10 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_clear_bss.o)
-                0x0000008a                __do_clear_bss
+ .init4         0x00007074       0x16 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_copy_data.o)
+                0x00007074                __do_copy_data
+ .init4         0x0000708a       0x10 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_clear_bss.o)
+                0x0000708a                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
@@ -248,84 +245,90 @@ END GROUP
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x0000009a        0x8 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
+ .init9         0x0000709a        0x8 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
  *(.init9)
  *(.text)
- .text          0x000000a2        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
-                0x000000a2                __vector_22
-                0x000000a2                __vector_1
-                0x000000a2                __vector_24
-                0x000000a2                __vector_12
-                0x000000a2                __bad_interrupt
-                0x000000a2                __vector_6
-                0x000000a2                __vector_3
-                0x000000a2                __vector_23
-                0x000000a2                __vector_25
-                0x000000a2                __vector_11
-                0x000000a2                __vector_17
-                0x000000a2                __vector_19
-                0x000000a2                __vector_7
-                0x000000a2                __vector_5
-                0x000000a2                __vector_4
-                0x000000a2                __vector_9
-                0x000000a2                __vector_2
-                0x000000a2                __vector_21
-                0x000000a2                __vector_15
-                0x000000a2                __vector_8
-                0x000000a2                __vector_14
-                0x000000a2                __vector_10
-                0x000000a2                __vector_16
-                0x000000a2                __vector_20
-                0x000000a6                . = ALIGN (0x2)
+ .text          0x000070a2        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328p.o
+                0x000070a2                __vector_22
+                0x000070a2                __vector_1
+                0x000070a2                __vector_24
+                0x000070a2                __vector_12
+                0x000070a2                __bad_interrupt
+                0x000070a2                __vector_6
+                0x000070a2                __vector_3
+                0x000070a2                __vector_23
+                0x000070a2                __vector_25
+                0x000070a2                __vector_11
+                0x000070a2                __vector_17
+                0x000070a2                __vector_19
+                0x000070a2                __vector_7
+                0x000070a2                __vector_5
+                0x000070a2                __vector_4
+                0x000070a2                __vector_9
+                0x000070a2                __vector_2
+                0x000070a2                __vector_21
+                0x000070a2                __vector_15
+                0x000070a2                __vector_8
+                0x000070a2                __vector_14
+                0x000070a2                __vector_10
+                0x000070a2                __vector_16
+                0x000070a2                __vector_20
+                0x000070a6                . = ALIGN (0x2)
  *(.text.*)
  .text.uart_send
-                0x000000a6       0x18 Atmel.o
-                0x000000a6                uart_send
+                0x000070a6       0x18 Atmel.o
+                0x000070a6                uart_send
  .text.clearScreen
-                0x000000be       0x2c Atmel.o
-                0x000000be                clearScreen
+                0x000070be       0x2c Atmel.o
+                0x000070be                clearScreen
  .text.uart_init
-                0x000000ea       0x1a Atmel.o
-                0x000000ea                uart_init
+                0x000070ea       0x1a Atmel.o
+                0x000070ea                uart_init
+ .text.uart_deinit
+                0x00007104       0x12 Atmel.o
+                0x00007104                uart_deinit
  .text.send_xoff
-                0x00000104       0x16 Atmel.o
-                0x00000104                send_xoff
+                0x00007116       0x16 Atmel.o
+                0x00007116                send_xoff
  .text.__vector_18
-                0x0000011a       0x98 Atmel.o
-                0x0000011a                __vector_18
+                0x0000712c       0x98 Atmel.o
+                0x0000712c                __vector_18
  .text.send_xon
-                0x000001b2       0x16 Atmel.o
-                0x000001b2                send_xon
+                0x000071c4       0x16 Atmel.o
+                0x000071c4                send_xon
  .text.uart_receive
-                0x000001c8       0x58 Atmel.o
-                0x000001c8                uart_receive
+                0x000071da       0x58 Atmel.o
+                0x000071da                uart_receive
  .text.sendCRLF
-                0x00000220        0xe Atmel.o
-                0x00000220                sendCRLF
+                0x00007232        0xe Atmel.o
+                0x00007232                sendCRLF
  .text.sendString
-                0x0000022e       0x2a Atmel.o
-                0x0000022e                sendString
+                0x00007240       0x2a Atmel.o
+                0x00007240                sendString
  .text.runProgram
-                0x00000258       0x2c Atmel.o
-                0x00000258                runProgram
+                0x0000726a       0x50 Atmel.o
+                0x0000726a                runProgram
  .text.__vector_13
-                0x00000284       0x48 Atmel.o
-                0x00000284                __vector_13
+                0x000072ba        0xe Atmel.o
+                0x000072ba                __vector_13
  .text.resetDataBuffer
-                0x000002cc       0x14 Atmel.o
-                0x000002cc                resetDataBuffer
+                0x000072c8       0x14 Atmel.o
+                0x000072c8                resetDataBuffer
+ .text.boot_program_page
+                0x000072dc       0x7e Atmel.o
+                0x000072dc                boot_program_page
  .text.programFlash
-                0x000002e0        0xa Atmel.o
-                0x000002e0                programFlash
- .text.hexDec   0x000002ea       0x54 Atmel.o
-                0x000002ea                hexDec
- .text.main     0x0000033e      0x2b6 Atmel.o
-                0x0000033e                main
-                0x000005f4                . = ALIGN (0x2)
+                0x0000735a       0x34 Atmel.o
+                0x0000735a                programFlash
+ .text.hexDec   0x0000738e       0x54 Atmel.o
+                0x0000738e                hexDec
+ .text.main     0x000073e2      0x2e0 Atmel.o
+                0x000073e2                main
+                0x000076c2                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000005f4        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
-                0x000005f4                _exit
-                0x000005f4                exit
+ .fini9         0x000076c2        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+                0x000076c2                _exit
+                0x000076c2                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -344,11 +347,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000005f4        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+ .fini0         0x000076c2        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x000005f8                _etext = .
+                0x000076c6                _etext = .
 
-.data           0x00800100       0x94 load address 0x000005f8
+.data           0x00800100       0x80 load address 0x000076c6
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -360,62 +363,62 @@ END GROUP
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x00800102       0x92 Atmel.o
+                0x00800102       0x7e Atmel.o
  *(.gnu.linkonce.d*)
-                0x00800194                . = ALIGN (0x2)
-                0x00800194                _edata = .
-                0x00800194                PROVIDE (__data_end, .)
+                0x00800180                . = ALIGN (0x2)
+                0x00800180                _edata = .
+                0x00800180                PROVIDE (__data_end, .)
 
-.bss            0x00800194       0xb3
-                0x00800194                PROVIDE (__bss_start, .)
+.bss            0x00800180       0xb3
+                0x00800180                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.currentPage
-                0x00800194        0x2 Atmel.o
-                0x00800194                currentPage
+                0x00800180        0x2 Atmel.o
+                0x00800180                currentPage
  .bss.hexBuffer
-                0x00800196        0x4 Atmel.o
-                0x00800196                hexBuffer
+                0x00800182        0x4 Atmel.o
+                0x00800182                hexBuffer
  .bss.bytesReceived
-                0x0080019a        0x1 Atmel.o
-                0x0080019a                bytesReceived
+                0x00800186        0x1 Atmel.o
+                0x00800186                bytesReceived
  .bss.currentDataLength
-                0x0080019b        0x1 Atmel.o
-                0x0080019b                currentDataLength
+                0x00800187        0x1 Atmel.o
+                0x00800187                currentDataLength
  .bss.dataIndex
-                0x0080019c        0x1 Atmel.o
-                0x0080019c                dataIndex
+                0x00800188        0x1 Atmel.o
+                0x00800188                dataIndex
  .bss.sendBlock
-                0x0080019d        0x1 Atmel.o
-                0x0080019d                sendBlock
- .bss.counter   0x0080019e        0x1 Atmel.o
-                0x0080019e                counter
- .bss.lastRead  0x0080019f        0x1 Atmel.o
-                0x0080019f                lastRead
+                0x00800189        0x1 Atmel.o
+                0x00800189                sendBlock
+ .bss.counter   0x0080018a        0x1 Atmel.o
+                0x0080018a                counter
+ .bss.lastRead  0x0080018b        0x1 Atmel.o
+                0x0080018b                lastRead
  .bss.lastReceived
-                0x008001a0        0x1 Atmel.o
-                0x008001a0                lastReceived
+                0x0080018c        0x1 Atmel.o
+                0x0080018c                lastReceived
  .bss.receiveBuffer
-                0x008001a1       0x20 Atmel.o
-                0x008001a1                receiveBuffer
+                0x0080018d       0x20 Atmel.o
+                0x0080018d                receiveBuffer
  *(COMMON)
- COMMON         0x008001c1       0x86 Atmel.o
-                0x008001c1                recordType
-                0x008001c2                data
-                0x00800242                pageAddress
-                0x00800244                byteSum
-                0x00800245                checksum
-                0x00800246                dataLength
-                0x00800247                PROVIDE (__bss_end, .)
-                0x000005f8                __data_load_start = LOADADDR (.data)
-                0x0000068c                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x008001ad       0x86 Atmel.o
+                0x008001ad                recordType
+                0x008001ae                data
+                0x0080022e                pageAddress
+                0x00800230                byteSum
+                0x00800231                checksum
+                0x00800232                dataLength
+                0x00800233                PROVIDE (__bss_end, .)
+                0x000076c6                __data_load_start = LOADADDR (.data)
+                0x00007746                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800247        0x0
-                0x00800247                PROVIDE (__noinit_start, .)
+.noinit         0x00800233        0x0
+                0x00800233                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800247                PROVIDE (__noinit_end, .)
-                0x00800247                _end = .
-                0x00800247                PROVIDE (__heap_start, .)
+                0x00800233                PROVIDE (__noinit_end, .)
+                0x00800233                _end = .
+                0x00800233                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -482,30 +485,30 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x88e
+.debug_info     0x00000000      0x953
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0x88e Atmel.o
+ .debug_info    0x00000000      0x953 Atmel.o
 
-.debug_abbrev   0x00000000      0x2b9
+.debug_abbrev   0x00000000      0x2ca
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x2b9 Atmel.o
+ .debug_abbrev  0x00000000      0x2ca Atmel.o
 
-.debug_line     0x00000000      0x382
+.debug_line     0x00000000      0x39c
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000      0x382 Atmel.o
+ .debug_line    0x00000000      0x39c Atmel.o
 
-.debug_frame    0x00000000      0x200
+.debug_frame    0x00000000      0x1c4
  *(.debug_frame)
- .debug_frame   0x00000000      0x200 Atmel.o
+ .debug_frame   0x00000000      0x1c4 Atmel.o
 
-.debug_str      0x00000000      0x31c
+.debug_str      0x00000000      0x321
  *(.debug_str)
- .debug_str     0x00000000      0x31c Atmel.o
-                                0x35a (size before relaxing)
+ .debug_str     0x00000000      0x321 Atmel.o
+                                0x35f (size before relaxing)
 
-.debug_loc      0x00000000      0x629
+.debug_loc      0x00000000      0x5da
  *(.debug_loc)
- .debug_loc     0x00000000      0x629 Atmel.o
+ .debug_loc     0x00000000      0x5da Atmel.o
 
 .debug_macinfo
  *(.debug_macinfo)

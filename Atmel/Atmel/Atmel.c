@@ -5,9 +5,8 @@
 #include <avr/interrupt.h>
 #include <avr/boot.h>
 #include <util/delay.h>
-
+#include <avr/wdt.h>
 #include "uart.h"
-//#include <stdio.h>
 
 #define WAIT_FOR_START 1
 #define GET_DATA_LENGTH 2
@@ -16,7 +15,6 @@
 #define GET_DATA 5
 #define GET_CHECKSUM 6
 #define CHECKSUM_ERROR 7
-#define FLASH_PAGE 8
 
 #define DATA_RECORD 0
 #define EOF_RECORD 1
@@ -64,13 +62,16 @@ uint8_t state = WAIT_FOR_START;
 uint16_t currentPage = 0;
 
 int main(){
+	
+		MCUSR &= ~(1 << WDRF);
+		WDTCSR &= ~(1 << WDE);
     // Disable interrupts just to be sure
-    //cli();
+    cli();
 
     // Activate the Bootloader IV
-    //uint8_t temp = MCUCR;
-    //MCUCR = temp | (1 << IVCE);
-    //MCUCR = temp | (1 << IVSEL);
+    uint8_t temp = MCUCR;
+    MCUCR = temp | (1 << IVCE);
+    MCUCR = temp | (1 << IVSEL);
 
     // Setup UART
     uart_init();
@@ -148,7 +149,6 @@ int main(){
 
                     if(pageNumber != currentPage){
                         programFlash();
-                        // TODO: Hier können lücken entstehen !!! && hier den dataIndex auf richtige addresse setzen!!!
                         currentPage = pageNumber;
 						dataIndex = pageAddress % SPM_PAGESIZE;
                     }
@@ -200,7 +200,6 @@ int main(){
                         }
                     }
                     break;
-                /* Maybe check out how to make eeprom write work */
                 default:
                     break;
                 }
@@ -215,76 +214,63 @@ int main(){
                     byteSum = ~byteSum + 1;
 					
 					if(byteSum != checksum){
-						//char msg[75];
-						//snprintf(msg, 75, "calc: %u, act: %u", byteSum, checksum);
-						//sendString(msg);
 						sendString("Checksum mismatch. Please Reset!");
-						state = WAIT_FOR_START;
+						state = CHECKSUM_ERROR;
 					}
 					
-					// If dataIndex == 0 -> page is empty -> no need to flash
-					if(recordType == EOF_RECORD && dataIndex != 0){
-						programFlash();  
+					if(recordType == EOF_RECORD){
+						// If dataIndex == 0 -> page is empty -> no need to flash
+						if(dataIndex != 0){
+							programFlash();
+						} 
+						runProgram();
 					}
-
-                    /* Debug printf 
-                    char msg[200];
-					sendCRLF();
-                    snprintf(msg, 200, "Len: %u, Adr: %u, RecType: %u, DataIndex: %u", dataLength, pageAddress, recordType, dataIndex);
-                    sendString(msg);
-                    sendCRLF();*/
                     
                     bytesReceived = 0;
                     state = WAIT_FOR_START;
                     sendCRLF();
-                }		
+                }
+			case CHECKSUM_ERROR:
+				
+			break;
+			default:
+			break;		
         }
     }
 }
 
 void runProgram(){
-    // Move back to the normal IV
-    //uint8_t temp = MCUCR;
-    //MCUCR = temp | (1 << IVCE);
-    //MCUCR = temp & ~(1 << IVSEL);
-    //endString("Starting program...");
-    
+	
+
+	// Disable interrupts
+	cli();
+	
+	//Move back to the normal IV
+	MCUCR |= (1 << IVCE);
+	//MCUCR = temp & ~(1 << IVSEL | 1 << IVCE);
+	MCUCR = 0;
+	
     _delay_ms(100);
+	
+	uint8_t t = MCUCR & (1 << IVSEL);
+	uart_send('0' + t);
+	_delay_ms(1000);
 
     // Reset Timer
     TCCR1B = 0x0;
     TCNT1 = 0x0;
     TIMSK1 = 0x0;
 	
-	sendString("Starting program...");
-
-    /*
     // Reset Uart
     uart_deinit();
-
-    // Disable interrupts
-    cli();
-
+	
     // Jump into the program
     goto *(0x0);
-    */
+	//asm volatile("jmp 0");
+    
 }
 
 void programFlash(){
-	//char msg[200];
-	
-	// Fill the buffer with padding if EOF received
-    // TODO
-	//sendCRLF();
-	//snprintf(msg, 200, "Printing page %d", currentPage);
-	//sendString(msg);
-	//sendCRLF();
-	/*for(uint8_t i = 0; i < SPM_PAGESIZE; i++){
-		//snprintf(msg, 200, "%x ", data[i]);
-		//sendString(msg);
-		if(i % 16 == 0) {sendCRLF();}
-	}*/
-	
 	send_xoff();
 	_delay_ms(20);
 	boot_program_page(currentPage, data);
