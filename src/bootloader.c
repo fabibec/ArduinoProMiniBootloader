@@ -5,9 +5,8 @@
 #include <avr/interrupt.h>
 #include <avr/boot.h>
 #include <util/delay.h>
-
+#include <avr/common.h>
 #include "uart.h"
-#include <stdio.h>
 
 #define WAIT_FOR_START 1
 #define GET_DATA_LENGTH 2
@@ -21,12 +20,15 @@
 #define EOF_RECORD 1
 
 /* This functions resets everything to the default state and starts the program */
-void runProgram();
+void runProgram(); //__attribute__((noreturn));
 /* Converts 4-Byte Hex String into uint16_t and 2-Byte Hex String into uint8_t */
 uint16_t hexDec(uint8_t *bytes, uint8_t num);
+
+void programFlash();
 /* Write page into program flash */
 void boot_program_page(uint16_t page, uint8_t *buf);
 
+void resetDataBuffer();
 
 
 /* This Timer runs 4sec in order to signal a the timeout*/
@@ -46,8 +48,9 @@ ISR(TIMER1_OVF_vect){
 uint8_t dataLength;
 uint16_t pageAddress;
 uint8_t recordType;
-uint8_t data[16];
-uint8_t dataIndex;
+uint8_t data[128];
+uint8_t dataIndex = 0;
+uint8_t currentDataLength = 0;
 uint8_t checksum;
 
 uint8_t bytesReceived = 0;
@@ -55,17 +58,22 @@ uint8_t hexBuffer[4] = {0};
 uint8_t byteSum;
 uint8_t state = WAIT_FOR_START;
 
+uint16_t currentPage = 0;
+uint8_t sregTemp;
+
 int main(){
     // Disable interrupts just to be sure
     cli();
 
     // Activate the Bootloader IV
-    //uint8_t temp = MCUCR;
-    //MCUCR = temp | (1 << IVCE);
-    //MCUCR = temp | (1 << IVSEL);
+    uint8_t temp = MCUCR;
+    MCUCR = temp | (1<<IVCE);
+    MCUCR = temp | (1<<IVSEL);
 
     // Setup UART
     uart_init();
+    sendString("Arduino ProMiniBootloader by Fabian Becker & Florian Remberger");
+    sendCRLF();
     sendString("<p> -> flashing mode | <any other key> -> continue to the application");
     sendCRLF();
 
@@ -80,18 +88,23 @@ int main(){
     // Mode selection 
     uint8_t c;
     while((c = uart_receive()) == '\0') ;
-    
+	
     if(c != 'p'){
         runProgram();
     }
 
     // Disable Timer
-    TIMSK1 = 0x0;
+    TCCR1B = 0x0;
 
     // Receive program data from serial
     sendString("Please enter .hex code");
     sendCRLF();
-    
+	
+	// Initialize Data Buffer
+
+    //TODO Page writing testen
+	resetDataBuffer();
+	
     // Wait for starting character
     while(1){
         while(!(c = uart_receive())) ;
@@ -112,10 +125,6 @@ int main(){
                 if(bytesReceived == 2){
                     // Decode data length
                     dataLength = (uint8_t) hexDec(hexBuffer, 2); 
-                    char msg[100];
-                    snprintf(msg, 100, "dataLength %u", (uint8_t) dataLength);
-                    sendString(msg);
-                    sendCRLF();
 
                     // Add up Bytes for checksum
                     byteSum += dataLength;
@@ -130,21 +139,20 @@ int main(){
                 uart_send(c);
                 if(bytesReceived == 4){
                     // Decode absolute page address
-                    pageAddress = hexDec(hexBuffer, 16);
-                    char msg[100];
-                    snprintf(msg, 100, "Address %hu", (uint16_t) pageAddress);
-                    sendString(msg);
-                    sendCRLF();
+                    pageAddress = hexDec(hexBuffer, 4);
                     
                     // Update Checksum
                     byteSum += (uint8_t) pageAddress;
                     byteSum += (uint8_t) (pageAddress >> 8);
                     
                     // Calculate relative page address
-                    pageAddress = pageAddress - (pageAddress % SPM_PAGESIZE);
-                    snprintf(msg, 100, "Address %d", pageAddress);
-                    sendString(msg);
-                    sendCRLF();
+                    uint16_t pageNumber = pageAddress / SPM_PAGESIZE;
+
+                    if(pageNumber != currentPage){
+                        programFlash();
+                        currentPage = pageNumber;
+						dataIndex = pageAddress % SPM_PAGESIZE;
+                    }
 
                     // Reset for next state
                     bytesReceived = 0;
@@ -161,7 +169,6 @@ int main(){
                     // Reset for next state
                     byteSum += recordType;
                     bytesReceived = 0;
-                    dataIndex = 0;
 
                     // Skip GET_DATA state for EOF Records (Type 01)
                     state = (recordType == 1) ? GET_CHECKSUM : GET_DATA;               
@@ -176,22 +183,24 @@ int main(){
                         // Collect data and add up checksum
                         data[dataIndex] = (uint8_t) hexDec(hexBuffer, 2);
                         byteSum += data[dataIndex];
-                        dataIndex++;
-                        bytesReceived = 0;
                         
-                        // Check if finished
-                        if(dataIndex == dataLength){
-                            // Fill the rest of the buffer if needed
-                            for(uint8_t i = dataLength; i < SPM_PAGESIZE; i++){
-                                data[i] = 0xFF;
-                            }
-
+                        currentDataLength++;	
+						dataIndex++;
+						
+						bytesReceived = 0;
+						
+						if (dataIndex == 128) {
+							programFlash();
+							currentPage++;
+						}
+						
+                        if(currentDataLength == dataLength){
                             // Go to the next state
+							currentDataLength = 0;
                             state = GET_CHECKSUM;
                         }
                     }
                     break;
-                /* Maybe check out how to make eeprom write work */
                 default:
                     break;
                 }
@@ -204,58 +213,78 @@ int main(){
                     
                     // Calculate checksum -> build 2th's complement and check for equality
                     byteSum = ~byteSum + 1;
-
-                    //sendString("TODO: Program Flash");
-                    /*
-                        z.B.
-                        send_XOFF();
-                        _delay_ms(5);
-                        boot_program_page(pageAddress, data)
-                        send_XON();
-                    */
-
-                    /* Debug printf */
-                    char msg[100];
-                    snprintf(msg, 100, "Checksum %u", byteSum);
-                    sendString(msg);
-                    sendCRLF();
+					
+					if(byteSum != checksum){
+						sendString("Checksum mismatch. Please Reset!");
+						state = CHECKSUM_ERROR;
+					}
+					
+					if(recordType == EOF_RECORD){
+						// If dataIndex == 0 -> page is empty -> no need to flash
+						if(dataIndex != 0){
+							programFlash();
+						} 
+						runProgram();
+					}
                     
                     bytesReceived = 0;
                     state = WAIT_FOR_START;
                     sendCRLF();
                 }
+			case CHECKSUM_ERROR:
+				
+			break;
+			default:
+			break;		
         }
     }
 }
 
 void runProgram(){
-    // Move back to the normal IV
-    //uint8_t temp = MCUCR;
-    //MCUCR = temp | (1 << IVCE);
-    //MCUCR = temp & ~(1 << IVSEL);
-    //endString("Starting program...");
-    
-    _delay_ms(100);
-
-    // Reset Timer
     TCCR1B = 0x0;
-    TCNT1 = 0x0;
-    TIMSK1 = 0x0;
-
-    /*
-    // Reset Uart
-    uart_deinit();
+	
+	//Move back to the normal IV
+	MCUCR = (1<<IVCE);
+	MCUCR = 0;
 
     // Disable interrupts
-    cli();
+	cli();
 
+    int8_t ivec = MCUCR & (1 << IVSEL);
+    if (!ivec){
+		PORTB |= (1 << DDB0);
+	}
+
+    // Reset Timer
+    TCNT1 = 0x0;
+    TIMSK1 = 0x0;
+	
+    // Reset Uart
+    uart_deinit();
+	
     // Jump into the program
-    goto *(0x0);
-    */
+    void (*start)( void ) = 0x0000;
+    start();
+}
+
+void programFlash(){
+	send_xoff();
+	_delay_ms(20);
+	boot_program_page(currentPage, data);
+	dataIndex = 0;
+	resetDataBuffer();
+    send_xon();
+}
+
+void resetDataBuffer() {
+	for (uint8_t i = 0; i < SPM_PAGESIZE; i++) {
+		data[i] = 0xFF;
+	}
 }
 
 void boot_program_page(uint16_t page, uint8_t *buf){
-    uint16_t i;
+    // Because we calculate pageNumbers we need to get the corresponding address
+    page = page * SPM_PAGESIZE;
     uint8_t sreg;
     // Disable interrupts.
     sreg = SREG;
@@ -263,7 +292,7 @@ void boot_program_page(uint16_t page, uint8_t *buf){
     eeprom_busy_wait();
     boot_page_erase(page);
     boot_spm_busy_wait();      // Wait until the memory is erased.
-    for(i = 0 ; i < SPM_PAGESIZE; i += 2){
+    for(uint8_t i = 0 ; i < SPM_PAGESIZE; i += 2){
         // Set up little-endian word.
         uint16_t w = *buf++;
         w += (*buf++) << 8;

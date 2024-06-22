@@ -6,7 +6,6 @@
 
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <avr/common.h>
 
 #define BAUD_CONST ((F_CPU/(16UL*BAUDRATE))-1)
 #define XOFF 0x13
@@ -49,8 +48,6 @@ ISR(USART_RX_vect){
 			send_xoff();
 		}
 	}
-	 
-	
 }
 
 void clearScreen(){
@@ -78,11 +75,19 @@ void uart_init() {
 }
 
 void uart_deinit() {
+	clearScreen();
+	sendString("Booting program...");
+	_delay_ms(500);
     clearScreen();
+	_delay_ms(100);
 	// Reset registers
 	UBRR0H = 0x0;
 	UBRR0L = 0x0;
+
+	UDR0 = 0x0;
+	UCSR0A = 0x20; // 0 0 1 0 0 0 0 0
 	UCSR0B = 0x0;
+	UCSR0C = 0x6; // 0 0 0 0 0 1 1 0
 }
 
 uint8_t bufferEmpty() {

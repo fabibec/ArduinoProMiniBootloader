@@ -30,6 +30,7 @@ void boot_program_page(uint16_t page, uint8_t *buf);
 
 void resetDataBuffer();
 
+//void wdtInit(void) __attribute__((naked)) __attribute__((section(".init1")));
 
 
 /* This Timer runs 4sec in order to signal a the timeout*/
@@ -62,9 +63,9 @@ uint8_t state = WAIT_FOR_START;
 uint16_t currentPage = 0;
 
 int main(){
-	
-		MCUSR &= ~(1 << WDRF);
-		WDTCSR &= ~(1 << WDE);
+	wdt_reset();
+	//MCUSR &= ~(1 << WDRF);
+	//WDTCSR &= ~(1 << WDE);
     // Disable interrupts just to be sure
     cli();
 
@@ -284,6 +285,11 @@ void resetDataBuffer() {
 	for (uint8_t i = 0; i < SPM_PAGESIZE; i++) {
 		data[i] = 0xFF;
 	}
+}
+
+void wdtInit(void){
+    MCUCSR = 0;
+    wdt_disable();
 }
 
 void boot_program_page(uint16_t page, uint8_t *buf){
