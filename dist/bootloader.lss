@@ -18,7 +18,7 @@ Disassembly of section .text:
     7028:	0c 94 51 38 	jmp	0x70a2	; 0x70a2 <__bad_interrupt>
     702c:	0c 94 51 38 	jmp	0x70a2	; 0x70a2 <__bad_interrupt>
     7030:	0c 94 51 38 	jmp	0x70a2	; 0x70a2 <__bad_interrupt>
-    7034:	0c 94 62 39 	jmp	0x72c4	; 0x72c4 <__vector_13>
+    7034:	0c 94 5e 39 	jmp	0x72bc	; 0x72bc <__vector_13>
     7038:	0c 94 51 38 	jmp	0x70a2	; 0x70a2 <__bad_interrupt>
     703c:	0c 94 51 38 	jmp	0x70a2	; 0x70a2 <__bad_interrupt>
     7040:	0c 94 51 38 	jmp	0x70a2	; 0x70a2 <__bad_interrupt>
@@ -44,18 +44,18 @@ Disassembly of section .text:
     7074:	11 e0       	ldi	r17, 0x01	; 1
     7076:	a0 e0       	ldi	r26, 0x00	; 0
     7078:	b1 e0       	ldi	r27, 0x01	; 1
-    707a:	e8 ed       	ldi	r30, 0xD8	; 216
+    707a:	e8 e9       	ldi	r30, 0x98	; 152
     707c:	f6 e7       	ldi	r31, 0x76	; 118
     707e:	02 c0       	rjmp	.+4      	; 0x7084 <__do_copy_data+0x10>
     7080:	05 90       	lpm	r0, Z+
     7082:	0d 92       	st	X+, r0
-    7084:	ac 3d       	cpi	r26, 0xDC	; 220
+    7084:	a8 3c       	cpi	r26, 0xC8	; 200
     7086:	b1 07       	cpc	r27, r17
     7088:	d9 f7       	brne	.-10     	; 0x7080 <__do_copy_data+0xc>
 
 0000708a <__do_clear_bss>:
     708a:	22 e0       	ldi	r18, 0x02	; 2
-    708c:	ac ed       	ldi	r26, 0xDC	; 220
+    708c:	a8 ec       	ldi	r26, 0xC8	; 200
     708e:	b1 e0       	ldi	r27, 0x01	; 1
     7090:	01 c0       	rjmp	.+2      	; 0x7094 <.do_clear_bss_start>
 
@@ -63,11 +63,11 @@ Disassembly of section .text:
     7092:	1d 92       	st	X+, r1
 
 00007094 <.do_clear_bss_start>:
-    7094:	a0 39       	cpi	r26, 0x90	; 144
+    7094:	ab 37       	cpi	r26, 0x7B	; 123
     7096:	b2 07       	cpc	r27, r18
     7098:	e1 f7       	brne	.-8      	; 0x7092 <.do_clear_bss_loop>
-    709a:	0e 94 0a 3a 	call	0x7414	; 0x7414 <main>
-    709e:	0c 94 6a 3b 	jmp	0x76d4	; 0x76d4 <_exit>
+    709a:	0e 94 e9 39 	call	0x73d2	; 0x73d2 <main>
+    709e:	0c 94 4a 3b 	jmp	0x7694	; 0x7694 <_exit>
 
 000070a2 <__bad_interrupt>:
     70a2:	0c 94 00 38 	jmp	0x7000	; 0x7000 <__vectors>
@@ -79,7 +79,7 @@ Disassembly of section .text:
 
 uint8_t bufferEmpty() {
 	return (!counter);
-    70a6:	90 91 e6 01 	lds	r25, 0x01E6	; 0x8001e6 <counter>
+    70a6:	90 91 d2 01 	lds	r25, 0x01D2	; 0x8001d2 <counter>
     70aa:	81 e0       	ldi	r24, 0x01	; 1
     70ac:	91 11       	cpse	r25, r1
     70ae:	80 e0       	ldi	r24, 0x00	; 0
@@ -95,7 +95,7 @@ void uart_send(uint8_t data) {
     70b2:	90 91 c0 00 	lds	r25, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7f80c0>
     70b6:	95 fd       	sbrc	r25, 5
     70b8:	04 c0       	rjmp	.+8      	; 0x70c2 <uart_send+0x10>
-    70ba:	90 91 e5 01 	lds	r25, 0x01E5	; 0x8001e5 <sendBlock>
+    70ba:	90 91 d1 01 	lds	r25, 0x01D1	; 0x8001d1 <sendBlock>
     70be:	99 23       	and	r25, r25
     70c0:	c1 f3       	breq	.-16     	; 0x70b2 <uart_send>
 		;
@@ -213,7 +213,7 @@ ISR(USART_RX_vect){
     7148:	21 f4       	brne	.+8      	; 0x7152 <__vector_18+0x32>
 		sendBlock = 1;
     714a:	81 e0       	ldi	r24, 0x01	; 1
-    714c:	80 93 e5 01 	sts	0x01E5, r24	; 0x8001e5 <sendBlock>
+    714c:	80 93 d1 01 	sts	0x01D1, r24	; 0x8001d1 <sendBlock>
     7150:	22 c0       	rjmp	.+68     	; 0x7196 <__vector_18+0x76>
 	} 
 	// if XON is received allow sending
@@ -221,30 +221,30 @@ ISR(USART_RX_vect){
     7152:	81 31       	cpi	r24, 0x11	; 17
     7154:	19 f4       	brne	.+6      	; 0x715c <__vector_18+0x3c>
 		sendBlock = 0;
-    7156:	10 92 e5 01 	sts	0x01E5, r1	; 0x8001e5 <sendBlock>
+    7156:	10 92 d1 01 	sts	0x01D1, r1	; 0x8001d1 <sendBlock>
     715a:	1d c0       	rjmp	.+58     	; 0x7196 <__vector_18+0x76>
 	}
 	else {
 		receiveBuffer[lastReceived] = tmp;
-    715c:	e0 91 e8 01 	lds	r30, 0x01E8	; 0x8001e8 <lastReceived>
+    715c:	e0 91 d4 01 	lds	r30, 0x01D4	; 0x8001d4 <lastReceived>
     7160:	f0 e0       	ldi	r31, 0x00	; 0
-    7162:	e7 51       	subi	r30, 0x17	; 23
+    7162:	eb 52       	subi	r30, 0x2B	; 43
     7164:	fe 4f       	sbci	r31, 0xFE	; 254
     7166:	80 83       	st	Z, r24
 		lastReceived = ((lastReceived + 1) % 32);
-    7168:	80 91 e8 01 	lds	r24, 0x01E8	; 0x8001e8 <lastReceived>
+    7168:	80 91 d4 01 	lds	r24, 0x01D4	; 0x8001d4 <lastReceived>
     716c:	90 e0       	ldi	r25, 0x00	; 0
     716e:	01 96       	adiw	r24, 0x01	; 1
     7170:	8f 71       	andi	r24, 0x1F	; 31
     7172:	99 27       	eor	r25, r25
-    7174:	80 93 e8 01 	sts	0x01E8, r24	; 0x8001e8 <lastReceived>
+    7174:	80 93 d4 01 	sts	0x01D4, r24	; 0x8001d4 <lastReceived>
 		counter++;
-    7178:	80 91 e6 01 	lds	r24, 0x01E6	; 0x8001e6 <counter>
+    7178:	80 91 d2 01 	lds	r24, 0x01D2	; 0x8001d2 <counter>
     717c:	8f 5f       	subi	r24, 0xFF	; 255
-    717e:	80 93 e6 01 	sts	0x01E6, r24	; 0x8001e6 <counter>
+    717e:	80 93 d2 01 	sts	0x01D2, r24	; 0x8001d2 <counter>
 		// If ring buffer has 26 elements stop receiving
 		if(counter >= 22 && x_status==XON) {
-    7182:	80 91 e6 01 	lds	r24, 0x01E6	; 0x8001e6 <counter>
+    7182:	80 91 d2 01 	lds	r24, 0x01D2	; 0x8001d2 <counter>
     7186:	86 31       	cpi	r24, 0x16	; 22
     7188:	30 f0       	brcs	.+12     	; 0x7196 <__vector_18+0x76>
     718a:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <x_status>
@@ -310,7 +310,7 @@ uint8_t uart_receive(){
 
 uint8_t bufferEmpty() {
 	return (!counter);
-    71d0:	80 91 e6 01 	lds	r24, 0x01E6	; 0x8001e6 <counter>
+    71d0:	80 91 d2 01 	lds	r24, 0x01D2	; 0x8001d2 <counter>
 	}
 	UDR0 = data;
 }
@@ -323,26 +323,26 @@ uint8_t uart_receive(){
 	}
 	
 	uint8_t returnVal = receiveBuffer[lastRead];	
-    71d8:	e0 91 e7 01 	lds	r30, 0x01E7	; 0x8001e7 <lastRead>
+    71d8:	e0 91 d3 01 	lds	r30, 0x01D3	; 0x8001d3 <lastRead>
     71dc:	f0 e0       	ldi	r31, 0x00	; 0
-    71de:	e7 51       	subi	r30, 0x17	; 23
+    71de:	eb 52       	subi	r30, 0x2B	; 43
     71e0:	fe 4f       	sbci	r31, 0xFE	; 254
     71e2:	c0 81       	ld	r28, Z
 	counter--;
-    71e4:	80 91 e6 01 	lds	r24, 0x01E6	; 0x8001e6 <counter>
+    71e4:	80 91 d2 01 	lds	r24, 0x01D2	; 0x8001d2 <counter>
     71e8:	81 50       	subi	r24, 0x01	; 1
-    71ea:	80 93 e6 01 	sts	0x01E6, r24	; 0x8001e6 <counter>
+    71ea:	80 93 d2 01 	sts	0x01D2, r24	; 0x8001d2 <counter>
 	lastRead = (lastRead + 1) % 32;
-    71ee:	80 91 e7 01 	lds	r24, 0x01E7	; 0x8001e7 <lastRead>
+    71ee:	80 91 d3 01 	lds	r24, 0x01D3	; 0x8001d3 <lastRead>
     71f2:	90 e0       	ldi	r25, 0x00	; 0
     71f4:	01 96       	adiw	r24, 0x01	; 1
     71f6:	8f 71       	andi	r24, 0x1F	; 31
     71f8:	99 27       	eor	r25, r25
-    71fa:	80 93 e7 01 	sts	0x01E7, r24	; 0x8001e7 <lastRead>
+    71fa:	80 93 d3 01 	sts	0x01D3, r24	; 0x8001d3 <lastRead>
 	
 	// If ring buffer elements are less than or equal to 10 allow sending
 	if (counter <= 10 && x_status == XOFF) {
-    71fe:	80 91 e6 01 	lds	r24, 0x01E6	; 0x8001e6 <counter>
+    71fe:	80 91 d2 01 	lds	r24, 0x01D2	; 0x8001d2 <counter>
     7202:	8b 30       	cpi	r24, 0x0B	; 11
     7204:	30 f4       	brcc	.+12     	; 0x7212 <uart_receive+0x44>
     7206:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <x_status>
@@ -467,781 +467,742 @@ void uart_deinit() {
     729a:	08 95       	ret
 
 0000729c <runProgram>:
-        }
     }
 }
 
 void runProgram(){
+    // clear timer
     TCCR1B = 0x0;
     729c:	10 92 81 00 	sts	0x0081, r1	; 0x800081 <__TEXT_REGION_LENGTH__+0x7f8081>
+    TCNT1 = 0x0;
+    72a0:	10 92 85 00 	sts	0x0085, r1	; 0x800085 <__TEXT_REGION_LENGTH__+0x7f8085>
+    72a4:	10 92 84 00 	sts	0x0084, r1	; 0x800084 <__TEXT_REGION_LENGTH__+0x7f8084>
+    TIMSK1 = 0x0;
+    72a8:	10 92 6f 00 	sts	0x006F, r1	; 0x80006f <__TEXT_REGION_LENGTH__+0x7f806f>
 	
-	//Move back to the normal IV
+	//Move back to the normal Interrupt vector
 	MCUCR = (1<<IVCE);
-    72a0:	81 e0       	ldi	r24, 0x01	; 1
-    72a2:	85 bf       	out	0x35, r24	; 53
+    72ac:	81 e0       	ldi	r24, 0x01	; 1
+    72ae:	85 bf       	out	0x35, r24	; 53
 	MCUCR = 0;
-    72a4:	15 be       	out	0x35, r1	; 53
+    72b0:	15 be       	out	0x35, r1	; 53
 
     // Disable interrupts
 	cli();
-    72a6:	f8 94       	cli
-
-    int8_t ivec = MCUCR & (1 << IVSEL);
-    if (!ivec){
-    72a8:	05 b6       	in	r0, 0x35	; 53
-    72aa:	01 fe       	sbrs	r0, 1
-		PORTB |= (1 << DDB0);
-    72ac:	28 9a       	sbi	0x05, 0	; 5
-	}
-
-    // Reset Timer
-    TCNT1 = 0x0;
-    72ae:	10 92 85 00 	sts	0x0085, r1	; 0x800085 <__TEXT_REGION_LENGTH__+0x7f8085>
-    72b2:	10 92 84 00 	sts	0x0084, r1	; 0x800084 <__TEXT_REGION_LENGTH__+0x7f8084>
-    TIMSK1 = 0x0;
-    72b6:	10 92 6f 00 	sts	0x006F, r1	; 0x80006f <__TEXT_REGION_LENGTH__+0x7f806f>
+    72b2:	f8 94       	cli
 	
     // Reset Uart
     uart_deinit();
-    72ba:	0e 94 25 39 	call	0x724a	; 0x724a <uart_deinit>
+    72b4:	0e 94 25 39 	call	0x724a	; 0x724a <uart_deinit>
 	
     // Jump into the program
-    void (*start)( void ) = 0x0000;
-    start();
-    72be:	e0 e0       	ldi	r30, 0x00	; 0
-    72c0:	f0 e0       	ldi	r31, 0x00	; 0
-    72c2:	09 94       	ijmp
+    goto*(0x0);
+    72b8:	0c 94 00 00 	jmp	0	; 0x0 <__TEXT_REGION_ORIGIN__>
 
-000072c4 <__vector_13>:
+000072bc <__vector_13>:
 
+/* Reset every cell of the data buffer to contain 0xFF */
 void resetDataBuffer();
 
-
-/* This Timer runs 4sec in order to signal a the timeout*/
+/* This Timer runs 4 seconds in order to signal a the timeout*/
 ISR(TIMER1_OVF_vect){
-    72c4:	1f 92       	push	r1
-    72c6:	0f 92       	push	r0
-    72c8:	0f b6       	in	r0, 0x3f	; 63
-    72ca:	0f 92       	push	r0
-    72cc:	11 24       	eor	r1, r1
-    72ce:	2f 93       	push	r18
-    72d0:	3f 93       	push	r19
-    72d2:	4f 93       	push	r20
-    72d4:	5f 93       	push	r21
-    72d6:	6f 93       	push	r22
-    72d8:	7f 93       	push	r23
-    72da:	8f 93       	push	r24
-    72dc:	9f 93       	push	r25
-    72de:	af 93       	push	r26
-    72e0:	bf 93       	push	r27
-    72e2:	ef 93       	push	r30
-    72e4:	ff 93       	push	r31
+    72bc:	1f 92       	push	r1
+    72be:	0f 92       	push	r0
+    72c0:	0f b6       	in	r0, 0x3f	; 63
+    72c2:	0f 92       	push	r0
+    72c4:	11 24       	eor	r1, r1
     runProgram();
-    72e6:	0e 94 4e 39 	call	0x729c	; 0x729c <runProgram>
-}
-    72ea:	ff 91       	pop	r31
-    72ec:	ef 91       	pop	r30
-    72ee:	bf 91       	pop	r27
-    72f0:	af 91       	pop	r26
-    72f2:	9f 91       	pop	r25
-    72f4:	8f 91       	pop	r24
-    72f6:	7f 91       	pop	r23
-    72f8:	6f 91       	pop	r22
-    72fa:	5f 91       	pop	r21
-    72fc:	4f 91       	pop	r20
-    72fe:	3f 91       	pop	r19
-    7300:	2f 91       	pop	r18
-    7302:	0f 90       	pop	r0
-    7304:	0f be       	out	0x3f, r0	; 63
-    7306:	0f 90       	pop	r0
-    7308:	1f 90       	pop	r1
-    730a:	18 95       	reti
+    72c6:	0e 94 4e 39 	call	0x729c	; 0x729c <runProgram>
 
-0000730c <resetDataBuffer>:
+000072ca <resetDataBuffer>:
 	dataIndex = 0;
 	resetDataBuffer();
     send_xon();
 }
 
 void resetDataBuffer() {
-    730c:	eb e0       	ldi	r30, 0x0B	; 11
-    730e:	f2 e0       	ldi	r31, 0x02	; 2
+    72ca:	e6 ef       	ldi	r30, 0xF6	; 246
+    72cc:	f1 e0       	ldi	r31, 0x01	; 1
 	for (uint8_t i = 0; i < SPM_PAGESIZE; i++) {
 		data[i] = 0xFF;
-    7310:	8f ef       	ldi	r24, 0xFF	; 255
+    72ce:	8f ef       	ldi	r24, 0xFF	; 255
 	resetDataBuffer();
     send_xon();
 }
 
 void resetDataBuffer() {
 	for (uint8_t i = 0; i < SPM_PAGESIZE; i++) {
-    7312:	92 e0       	ldi	r25, 0x02	; 2
-    7314:	eb 38       	cpi	r30, 0x8B	; 139
-    7316:	f9 07       	cpc	r31, r25
-    7318:	11 f0       	breq	.+4      	; 0x731e <resetDataBuffer+0x12>
+    72d0:	92 e0       	ldi	r25, 0x02	; 2
+    72d2:	e6 37       	cpi	r30, 0x76	; 118
+    72d4:	f9 07       	cpc	r31, r25
+    72d6:	11 f0       	breq	.+4      	; 0x72dc <resetDataBuffer+0x12>
 		data[i] = 0xFF;
-    731a:	81 93       	st	Z+, r24
-    731c:	fa cf       	rjmp	.-12     	; 0x7312 <resetDataBuffer+0x6>
+    72d8:	81 93       	st	Z+, r24
+    72da:	fa cf       	rjmp	.-12     	; 0x72d0 <resetDataBuffer+0x6>
 	}
 }
-    731e:	08 95       	ret
+    72dc:	08 95       	ret
 
-00007320 <boot_program_page>:
+000072de <boot_program_page>:
 
 void boot_program_page(uint16_t page, uint8_t *buf){
-    7320:	cf 93       	push	r28
-    7322:	df 93       	push	r29
+    72de:	cf 93       	push	r28
+    72e0:	df 93       	push	r29
     // Because we calculate pageNumbers we need to get the corresponding address
     page = page * SPM_PAGESIZE;
-    7324:	96 95       	lsr	r25
-    7326:	98 2f       	mov	r25, r24
-    7328:	88 27       	eor	r24, r24
-    732a:	97 95       	ror	r25
-    732c:	87 95       	ror	r24
+    72e2:	96 95       	lsr	r25
+    72e4:	98 2f       	mov	r25, r24
+    72e6:	88 27       	eor	r24, r24
+    72e8:	97 95       	ror	r25
+    72ea:	87 95       	ror	r24
     uint8_t sreg;
-    // Disable interrupts.
+
+    // Disable interrupts
     sreg = SREG;
-    732e:	5f b7       	in	r21, 0x3f	; 63
+    72ec:	5f b7       	in	r21, 0x3f	; 63
     cli();
-    7330:	f8 94       	cli
+    72ee:	f8 94       	cli
+
+    // Wait until the memory is erased
     eeprom_busy_wait();
-    7332:	f9 99       	sbic	0x1f, 1	; 31
-    7334:	fe cf       	rjmp	.-4      	; 0x7332 <boot_program_page+0x12>
+    72f0:	f9 99       	sbic	0x1f, 1	; 31
+    72f2:	fe cf       	rjmp	.-4      	; 0x72f0 <boot_program_page+0x12>
     boot_page_erase(page);
-    7336:	23 e0       	ldi	r18, 0x03	; 3
-    7338:	fc 01       	movw	r30, r24
-    733a:	20 93 57 00 	sts	0x0057, r18	; 0x800057 <__TEXT_REGION_LENGTH__+0x7f8057>
-    733e:	e8 95       	spm
-    boot_spm_busy_wait();      // Wait until the memory is erased.
-    7340:	07 b6       	in	r0, 0x37	; 55
-    7342:	00 fc       	sbrc	r0, 0
-    7344:	fd cf       	rjmp	.-6      	; 0x7340 <boot_program_page+0x20>
-    7346:	db 01       	movw	r26, r22
-    7348:	40 e0       	ldi	r20, 0x00	; 0
+    72f4:	23 e0       	ldi	r18, 0x03	; 3
+    72f6:	fc 01       	movw	r30, r24
+    72f8:	20 93 57 00 	sts	0x0057, r18	; 0x800057 <__TEXT_REGION_LENGTH__+0x7f8057>
+    72fc:	e8 95       	spm
+    boot_spm_busy_wait();      
+    72fe:	07 b6       	in	r0, 0x37	; 55
+    7300:	00 fc       	sbrc	r0, 0
+    7302:	fd cf       	rjmp	.-6      	; 0x72fe <boot_program_page+0x20>
+    7304:	db 01       	movw	r26, r22
+    7306:	40 e0       	ldi	r20, 0x00	; 0
     for(uint8_t i = 0 ; i < SPM_PAGESIZE; i += 2){
         // Set up little-endian word.
         uint16_t w = *buf++;
         w += (*buf++) << 8;
     
         boot_page_fill (page + i, w);
-    734a:	61 e0       	ldi	r22, 0x01	; 1
-    734c:	ec 01       	movw	r28, r24
-    734e:	ca 1b       	sub	r28, r26
-    7350:	db 0b       	sbc	r29, r27
-    eeprom_busy_wait();
+    7308:	61 e0       	ldi	r22, 0x01	; 1
+    730a:	ec 01       	movw	r28, r24
+    730c:	ca 1b       	sub	r28, r26
+    730e:	db 0b       	sbc	r29, r27
     boot_page_erase(page);
-    boot_spm_busy_wait();      // Wait until the memory is erased.
+    boot_spm_busy_wait();      
+
     for(uint8_t i = 0 ; i < SPM_PAGESIZE; i += 2){
         // Set up little-endian word.
         uint16_t w = *buf++;
-    7352:	7c 91       	ld	r23, X
+    7310:	7c 91       	ld	r23, X
         w += (*buf++) << 8;
     
         boot_page_fill (page + i, w);
-    7354:	fe 01       	movw	r30, r28
-    7356:	ea 0f       	add	r30, r26
-    7358:	fb 1f       	adc	r31, r27
-    735a:	11 96       	adiw	r26, 0x01	; 1
-    735c:	2c 91       	ld	r18, X
-    735e:	11 97       	sbiw	r26, 0x01	; 1
-    7360:	30 e0       	ldi	r19, 0x00	; 0
-    7362:	32 2f       	mov	r19, r18
-    7364:	22 27       	eor	r18, r18
-    7366:	27 0f       	add	r18, r23
-    7368:	31 1d       	adc	r19, r1
-    736a:	09 01       	movw	r0, r18
-    736c:	60 93 57 00 	sts	0x0057, r22	; 0x800057 <__TEXT_REGION_LENGTH__+0x7f8057>
-    7370:	e8 95       	spm
-    7372:	11 24       	eor	r1, r1
-    sreg = SREG;
-    cli();
+    7312:	fe 01       	movw	r30, r28
+    7314:	ea 0f       	add	r30, r26
+    7316:	fb 1f       	adc	r31, r27
+    7318:	11 96       	adiw	r26, 0x01	; 1
+    731a:	2c 91       	ld	r18, X
+    731c:	11 97       	sbiw	r26, 0x01	; 1
+    731e:	30 e0       	ldi	r19, 0x00	; 0
+    7320:	32 2f       	mov	r19, r18
+    7322:	22 27       	eor	r18, r18
+    7324:	27 0f       	add	r18, r23
+    7326:	31 1d       	adc	r19, r1
+    7328:	09 01       	movw	r0, r18
+    732a:	60 93 57 00 	sts	0x0057, r22	; 0x800057 <__TEXT_REGION_LENGTH__+0x7f8057>
+    732e:	e8 95       	spm
+    7330:	11 24       	eor	r1, r1
+    // Wait until the memory is erased
     eeprom_busy_wait();
     boot_page_erase(page);
-    boot_spm_busy_wait();      // Wait until the memory is erased.
+    boot_spm_busy_wait();      
+
     for(uint8_t i = 0 ; i < SPM_PAGESIZE; i += 2){
-    7374:	4e 5f       	subi	r20, 0xFE	; 254
-    7376:	12 96       	adiw	r26, 0x02	; 2
-    7378:	40 38       	cpi	r20, 0x80	; 128
-    737a:	59 f7       	brne	.-42     	; 0x7352 <boot_program_page+0x32>
-        uint16_t w = *buf++;
-        w += (*buf++) << 8;
+    7332:	4e 5f       	subi	r20, 0xFE	; 254
+    7334:	12 96       	adiw	r26, 0x02	; 2
+    7336:	40 38       	cpi	r20, 0x80	; 128
+    7338:	59 f7       	brne	.-42     	; 0x7310 <boot_program_page+0x32>
     
         boot_page_fill (page + i, w);
     }
-    boot_page_write(page);     // Store buffer in flash page.
-    737c:	25 e0       	ldi	r18, 0x05	; 5
-    737e:	fc 01       	movw	r30, r24
-    7380:	20 93 57 00 	sts	0x0057, r18	; 0x800057 <__TEXT_REGION_LENGTH__+0x7f8057>
-    7384:	e8 95       	spm
-    boot_spm_busy_wait();       // Wait until the memory is written.
-    7386:	07 b6       	in	r0, 0x37	; 55
-    7388:	00 fc       	sbrc	r0, 0
-    738a:	fd cf       	rjmp	.-6      	; 0x7386 <boot_program_page+0x66>
+
+    // Store buffer in flash page
+    boot_page_write(page);
+    733a:	25 e0       	ldi	r18, 0x05	; 5
+    733c:	fc 01       	movw	r30, r24
+    733e:	20 93 57 00 	sts	0x0057, r18	; 0x800057 <__TEXT_REGION_LENGTH__+0x7f8057>
+    7342:	e8 95       	spm
+    // Wait until the memory is written     
+    boot_spm_busy_wait();       
+    7344:	07 b6       	in	r0, 0x37	; 55
+    7346:	00 fc       	sbrc	r0, 0
+    7348:	fd cf       	rjmp	.-6      	; 0x7344 <boot_program_page+0x66>
     // Reenable RWW-section again. We need this if we want to jump back
-    // to the application after bootloading.
+    // to the application after bootloading
     boot_rww_enable();
-    738c:	81 e1       	ldi	r24, 0x11	; 17
-    738e:	80 93 57 00 	sts	0x0057, r24	; 0x800057 <__TEXT_REGION_LENGTH__+0x7f8057>
-    7392:	e8 95       	spm
+    734a:	81 e1       	ldi	r24, 0x11	; 17
+    734c:	80 93 57 00 	sts	0x0057, r24	; 0x800057 <__TEXT_REGION_LENGTH__+0x7f8057>
+    7350:	e8 95       	spm
     // Re-enable interrupts (if they were ever enabled).
     SREG = sreg;
-    7394:	5f bf       	out	0x3f, r21	; 63
+    7352:	5f bf       	out	0x3f, r21	; 63
 }
-    7396:	df 91       	pop	r29
-    7398:	cf 91       	pop	r28
-    739a:	08 95       	ret
+    7354:	df 91       	pop	r29
+    7356:	cf 91       	pop	r28
+    7358:	08 95       	ret
 
-0000739c <programFlash>:
-    void (*start)( void ) = 0x0000;
-    start();
+0000735a <programFlash>:
+    // Jump into the program
+    goto*(0x0);
 }
 
 void programFlash(){
 	send_xoff();
-    739c:	0e 94 85 38 	call	0x710a	; 0x710a <send_xoff>
-    73a0:	2f ef       	ldi	r18, 0xFF	; 255
-    73a2:	89 ef       	ldi	r24, 0xF9	; 249
-    73a4:	90 e0       	ldi	r25, 0x00	; 0
-    73a6:	21 50       	subi	r18, 0x01	; 1
-    73a8:	80 40       	sbci	r24, 0x00	; 0
-    73aa:	90 40       	sbci	r25, 0x00	; 0
-    73ac:	e1 f7       	brne	.-8      	; 0x73a6 <programFlash+0xa>
-    73ae:	00 c0       	rjmp	.+0      	; 0x73b0 <programFlash+0x14>
-    73b0:	00 00       	nop
+    735a:	0e 94 85 38 	call	0x710a	; 0x710a <send_xoff>
+    735e:	2f ef       	ldi	r18, 0xFF	; 255
+    7360:	89 ef       	ldi	r24, 0xF9	; 249
+    7362:	90 e0       	ldi	r25, 0x00	; 0
+    7364:	21 50       	subi	r18, 0x01	; 1
+    7366:	80 40       	sbci	r24, 0x00	; 0
+    7368:	90 40       	sbci	r25, 0x00	; 0
+    736a:	e1 f7       	brne	.-8      	; 0x7364 <programFlash+0xa>
+    736c:	00 c0       	rjmp	.+0      	; 0x736e <programFlash+0x14>
+    736e:	00 00       	nop
 	_delay_ms(20);
 	boot_program_page(currentPage, data);
-    73b2:	6b e0       	ldi	r22, 0x0B	; 11
-    73b4:	72 e0       	ldi	r23, 0x02	; 2
-    73b6:	80 91 dc 01 	lds	r24, 0x01DC	; 0x8001dc <__data_end>
-    73ba:	90 91 dd 01 	lds	r25, 0x01DD	; 0x8001dd <__data_end+0x1>
-    73be:	0e 94 90 39 	call	0x7320	; 0x7320 <boot_program_page>
+    7370:	66 ef       	ldi	r22, 0xF6	; 246
+    7372:	71 e0       	ldi	r23, 0x01	; 1
+    7374:	80 91 c8 01 	lds	r24, 0x01C8	; 0x8001c8 <__data_end>
+    7378:	90 91 c9 01 	lds	r25, 0x01C9	; 0x8001c9 <__data_end+0x1>
+    737c:	0e 94 6f 39 	call	0x72de	; 0x72de <boot_program_page>
 	dataIndex = 0;
-    73c2:	10 92 e4 01 	sts	0x01E4, r1	; 0x8001e4 <dataIndex>
+    7380:	10 92 d0 01 	sts	0x01D0, r1	; 0x8001d0 <dataIndex>
 	resetDataBuffer();
-    73c6:	0e 94 86 39 	call	0x730c	; 0x730c <resetDataBuffer>
+    7384:	0e 94 65 39 	call	0x72ca	; 0x72ca <resetDataBuffer>
     send_xon();
-    73ca:	0c 94 dc 38 	jmp	0x71b8	; 0x71b8 <send_xon>
+    7388:	0c 94 dc 38 	jmp	0x71b8	; 0x71b8 <send_xon>
 
-000073ce <hexDec>:
+0000738c <hexDec>:
     // Re-enable interrupts (if they were ever enabled).
     SREG = sreg;
 }
 
 /* Converts 4-Byte Hex String into uint16_t and 2-Byte Hex String into uint8_t */
 uint16_t hexDec(uint8_t *bytes, uint8_t num){
-    73ce:	48 2f       	mov	r20, r24
+    738c:	48 2f       	mov	r20, r24
     uint16_t ret = 0;
     uint8_t c;
     for(uint8_t i = 0; i < num; i++){
-    73d0:	fc 01       	movw	r30, r24
+    738e:	fc 01       	movw	r30, r24
     SREG = sreg;
 }
 
 /* Converts 4-Byte Hex String into uint16_t and 2-Byte Hex String into uint8_t */
 uint16_t hexDec(uint8_t *bytes, uint8_t num){
     uint16_t ret = 0;
-    73d2:	20 e0       	ldi	r18, 0x00	; 0
-    73d4:	30 e0       	ldi	r19, 0x00	; 0
+    7390:	20 e0       	ldi	r18, 0x00	; 0
+    7392:	30 e0       	ldi	r19, 0x00	; 0
     uint8_t c;
     for(uint8_t i = 0; i < num; i++){
-    73d6:	8e 2f       	mov	r24, r30
-    73d8:	84 1b       	sub	r24, r20
-    73da:	86 17       	cp	r24, r22
-    73dc:	c8 f4       	brcc	.+50     	; 0x7410 <hexDec+0x42>
+    7394:	8e 2f       	mov	r24, r30
+    7396:	84 1b       	sub	r24, r20
+    7398:	86 17       	cp	r24, r22
+    739a:	c8 f4       	brcc	.+50     	; 0x73ce <hexDec+0x42>
         c = bytes[i];
-    73de:	91 91       	ld	r25, Z+
+    739c:	91 91       	ld	r25, Z+
         if(c >= '0' && c <= '9'){
-    73e0:	80 ed       	ldi	r24, 0xD0	; 208
-    73e2:	89 0f       	add	r24, r25
-    73e4:	8a 30       	cpi	r24, 0x0A	; 10
-    73e6:	60 f0       	brcs	.+24     	; 0x7400 <hexDec+0x32>
+    739e:	80 ed       	ldi	r24, 0xD0	; 208
+    73a0:	89 0f       	add	r24, r25
+    73a2:	8a 30       	cpi	r24, 0x0A	; 10
+    73a4:	60 f0       	brcs	.+24     	; 0x73be <hexDec+0x32>
             c -= '0';
         } else if (c >= 'A' && c <= 'F'){
-    73e8:	8f eb       	ldi	r24, 0xBF	; 191
-    73ea:	89 0f       	add	r24, r25
-    73ec:	86 30       	cpi	r24, 0x06	; 6
-    73ee:	10 f4       	brcc	.+4      	; 0x73f4 <hexDec+0x26>
+    73a6:	8f eb       	ldi	r24, 0xBF	; 191
+    73a8:	89 0f       	add	r24, r25
+    73aa:	86 30       	cpi	r24, 0x06	; 6
+    73ac:	10 f4       	brcc	.+4      	; 0x73b2 <hexDec+0x26>
             c -= ('A' - 10);
-    73f0:	97 53       	subi	r25, 0x37	; 55
-    73f2:	07 c0       	rjmp	.+14     	; 0x7402 <hexDec+0x34>
+    73ae:	97 53       	subi	r25, 0x37	; 55
+    73b0:	07 c0       	rjmp	.+14     	; 0x73c0 <hexDec+0x34>
         } else if (c >= 'a' && c <= 'f'){
-    73f4:	8f e9       	ldi	r24, 0x9F	; 159
-    73f6:	89 0f       	add	r24, r25
-    73f8:	86 30       	cpi	r24, 0x06	; 6
-    73fa:	18 f4       	brcc	.+6      	; 0x7402 <hexDec+0x34>
+    73b2:	8f e9       	ldi	r24, 0x9F	; 159
+    73b4:	89 0f       	add	r24, r25
+    73b6:	86 30       	cpi	r24, 0x06	; 6
+    73b8:	18 f4       	brcc	.+6      	; 0x73c0 <hexDec+0x34>
             c -= ('a' - 10);
-    73fc:	97 55       	subi	r25, 0x57	; 87
-    73fe:	01 c0       	rjmp	.+2      	; 0x7402 <hexDec+0x34>
-    7400:	98 2f       	mov	r25, r24
+    73ba:	97 55       	subi	r25, 0x57	; 87
+    73bc:	01 c0       	rjmp	.+2      	; 0x73c0 <hexDec+0x34>
+    73be:	98 2f       	mov	r25, r24
         }
         ret = (ret << 4) | c;
-    7402:	84 e0       	ldi	r24, 0x04	; 4
-    7404:	22 0f       	add	r18, r18
-    7406:	33 1f       	adc	r19, r19
-    7408:	8a 95       	dec	r24
-    740a:	e1 f7       	brne	.-8      	; 0x7404 <hexDec+0x36>
-    740c:	29 2b       	or	r18, r25
-    740e:	e3 cf       	rjmp	.-58     	; 0x73d6 <hexDec+0x8>
+    73c0:	84 e0       	ldi	r24, 0x04	; 4
+    73c2:	22 0f       	add	r18, r18
+    73c4:	33 1f       	adc	r19, r19
+    73c6:	8a 95       	dec	r24
+    73c8:	e1 f7       	brne	.-8      	; 0x73c2 <hexDec+0x36>
+    73ca:	29 2b       	or	r18, r25
+    73cc:	e3 cf       	rjmp	.-58     	; 0x7394 <hexDec+0x8>
     } 
     return ret;
 }
-    7410:	c9 01       	movw	r24, r18
-    7412:	08 95       	ret
+    73ce:	c9 01       	movw	r24, r18
+    73d0:	08 95       	ret
 
-00007414 <main>:
+000073d2 <main>:
+/* number of the page that is currently filled */
 uint16_t currentPage = 0;
-uint8_t sregTemp;
 
 int main(){
     // Disable interrupts just to be sure
     cli();
-    7414:	f8 94       	cli
+    73d2:	f8 94       	cli
 
-    // Activate the Bootloader IV
+    // Activate the bootloader Interrupt Vectors
     uint8_t temp = MCUCR;
-    7416:	85 b7       	in	r24, 0x35	; 53
+    73d4:	85 b7       	in	r24, 0x35	; 53
     MCUCR = temp | (1<<IVCE);
-    7418:	98 2f       	mov	r25, r24
-    741a:	91 60       	ori	r25, 0x01	; 1
-    741c:	95 bf       	out	0x35, r25	; 53
+    73d6:	98 2f       	mov	r25, r24
+    73d8:	91 60       	ori	r25, 0x01	; 1
+    73da:	95 bf       	out	0x35, r25	; 53
     MCUCR = temp | (1<<IVSEL);
-    741e:	82 60       	ori	r24, 0x02	; 2
-    7420:	85 bf       	out	0x35, r24	; 53
+    73dc:	82 60       	ori	r24, 0x02	; 2
+    73de:	85 bf       	out	0x35, r24	; 53
 
     // Setup UART
     uart_init();
-    7422:	0e 94 79 38 	call	0x70f2	; 0x70f2 <uart_init>
-    sendString("Arduino ProMiniBootloader by Fabian Becker & Florian Remberger ⓒ 2024");
-    7426:	85 e1       	ldi	r24, 0x15	; 21
-    7428:	91 e0       	ldi	r25, 0x01	; 1
-    742a:	0e 94 12 39 	call	0x7224	; 0x7224 <sendString>
+    73e0:	0e 94 79 38 	call	0x70f2	; 0x70f2 <uart_init>
+    sendString("Arduino Pro Mini Bootloader by Fabian Becker & Florian Remberger");
+    73e4:	85 e1       	ldi	r24, 0x15	; 21
+    73e6:	91 e0       	ldi	r25, 0x01	; 1
+    73e8:	0e 94 12 39 	call	0x7224	; 0x7224 <sendString>
     sendCRLF();
-    742e:	0e 94 0c 39 	call	0x7218	; 0x7218 <sendCRLF>
-    sendString("<p> -> flashing mode | <any other key> -> continue to the application");
-    7432:	8d e5       	ldi	r24, 0x5D	; 93
-    7434:	91 e0       	ldi	r25, 0x01	; 1
-    7436:	0e 94 12 39 	call	0x7224	; 0x7224 <sendString>
+    73ec:	0e 94 0c 39 	call	0x7218	; 0x7218 <sendCRLF>
+    sendString("<p> -> flashing mode | <any key> -> return to application");
+    73f0:	86 e5       	ldi	r24, 0x56	; 86
+    73f2:	91 e0       	ldi	r25, 0x01	; 1
+    73f4:	0e 94 12 39 	call	0x7224	; 0x7224 <sendString>
     sendCRLF();
-    743a:	0e 94 0c 39 	call	0x7218	; 0x7218 <sendCRLF>
+    73f8:	0e 94 0c 39 	call	0x7218	; 0x7218 <sendCRLF>
 
     // Setup Timer1 to run (4 secs.) -> prescaler 1024
     TCCR1B |= ((1 << CS12) | (1 << CS10));
-    743e:	80 91 81 00 	lds	r24, 0x0081	; 0x800081 <__TEXT_REGION_LENGTH__+0x7f8081>
-    7442:	85 60       	ori	r24, 0x05	; 5
-    7444:	80 93 81 00 	sts	0x0081, r24	; 0x800081 <__TEXT_REGION_LENGTH__+0x7f8081>
+    73fc:	80 91 81 00 	lds	r24, 0x0081	; 0x800081 <__TEXT_REGION_LENGTH__+0x7f8081>
+    7400:	85 60       	ori	r24, 0x05	; 5
+    7402:	80 93 81 00 	sts	0x0081, r24	; 0x800081 <__TEXT_REGION_LENGTH__+0x7f8081>
     // 65536 - 62500
     TCNT1 = 3036;
-    7448:	8c ed       	ldi	r24, 0xDC	; 220
-    744a:	9b e0       	ldi	r25, 0x0B	; 11
-    744c:	90 93 85 00 	sts	0x0085, r25	; 0x800085 <__TEXT_REGION_LENGTH__+0x7f8085>
-    7450:	80 93 84 00 	sts	0x0084, r24	; 0x800084 <__TEXT_REGION_LENGTH__+0x7f8084>
+    7406:	8c ed       	ldi	r24, 0xDC	; 220
+    7408:	9b e0       	ldi	r25, 0x0B	; 11
+    740a:	90 93 85 00 	sts	0x0085, r25	; 0x800085 <__TEXT_REGION_LENGTH__+0x7f8085>
+    740e:	80 93 84 00 	sts	0x0084, r24	; 0x800084 <__TEXT_REGION_LENGTH__+0x7f8084>
     TIMSK1 = (1 << TOIE1);
-    7454:	81 e0       	ldi	r24, 0x01	; 1
-    7456:	80 93 6f 00 	sts	0x006F, r24	; 0x80006f <__TEXT_REGION_LENGTH__+0x7f806f>
+    7412:	81 e0       	ldi	r24, 0x01	; 1
+    7414:	80 93 6f 00 	sts	0x006F, r24	; 0x80006f <__TEXT_REGION_LENGTH__+0x7f806f>
 
     sei();
-    745a:	78 94       	sei
+    7418:	78 94       	sei
 
     // Mode selection 
     uint8_t c;
     while((c = uart_receive()) == '\0') ;
-    745c:	0e 94 e7 38 	call	0x71ce	; 0x71ce <uart_receive>
-    7460:	88 23       	and	r24, r24
-    7462:	e1 f3       	breq	.-8      	; 0x745c <main+0x48>
+    741a:	0e 94 e7 38 	call	0x71ce	; 0x71ce <uart_receive>
+    741e:	88 23       	and	r24, r24
+    7420:	e1 f3       	breq	.-8      	; 0x741a <main+0x48>
 	
     if(c != 'p'){
-    7464:	80 37       	cpi	r24, 0x70	; 112
-    7466:	11 f0       	breq	.+4      	; 0x746c <main+0x58>
+    7422:	80 37       	cpi	r24, 0x70	; 112
+    7424:	11 f0       	breq	.+4      	; 0x742a <main+0x58>
         runProgram();
-    7468:	0e 94 4e 39 	call	0x729c	; 0x729c <runProgram>
+    7426:	0e 94 4e 39 	call	0x729c	; 0x729c <runProgram>
     }
 
     // Disable Timer
     TCCR1B = 0x0;
-    746c:	10 92 81 00 	sts	0x0081, r1	; 0x800081 <__TEXT_REGION_LENGTH__+0x7f8081>
+    742a:	10 92 81 00 	sts	0x0081, r1	; 0x800081 <__TEXT_REGION_LENGTH__+0x7f8081>
 
     // Receive program data from serial
     sendString("Please enter .hex code");
-    7470:	83 ea       	ldi	r24, 0xA3	; 163
-    7472:	91 e0       	ldi	r25, 0x01	; 1
-    7474:	0e 94 12 39 	call	0x7224	; 0x7224 <sendString>
+    742e:	80 e9       	ldi	r24, 0x90	; 144
+    7430:	91 e0       	ldi	r25, 0x01	; 1
+    7432:	0e 94 12 39 	call	0x7224	; 0x7224 <sendString>
     sendCRLF();
-    7478:	0e 94 0c 39 	call	0x7218	; 0x7218 <sendCRLF>
+    7436:	0e 94 0c 39 	call	0x7218	; 0x7218 <sendCRLF>
 	
 	// Initialize Data Buffer
-
-    //TODO Page writing testen
 	resetDataBuffer();
-    747c:	0e 94 86 39 	call	0x730c	; 0x730c <resetDataBuffer>
+    743a:	0e 94 65 39 	call	0x72ca	; 0x72ca <resetDataBuffer>
+							currentPage++;
 						}
 						
                         if(currentDataLength == dataLength){
-                            // Go to the next state
 							currentDataLength = 0;
                             state = GET_CHECKSUM;
-    7480:	06 e0       	ldi	r16, 0x06	; 6
+    743e:	06 e0       	ldi	r16, 0x06	; 6
 						} 
 						runProgram();
 					}
                     
                     bytesReceived = 0;
                     state = WAIT_FOR_START;
-    7482:	11 e0       	ldi	r17, 0x01	; 1
+    7440:	11 e0       	ldi	r17, 0x01	; 1
                     // Calculate checksum -> build 2th's complement and check for equality
                     byteSum = ~byteSum + 1;
 					
 					if(byteSum != checksum){
 						sendString("Checksum mismatch. Please Reset!");
 						state = CHECKSUM_ERROR;
-    7484:	97 e0       	ldi	r25, 0x07	; 7
-    7486:	f9 2e       	mov	r15, r25
+    7442:	97 e0       	ldi	r25, 0x07	; 7
+    7444:	f9 2e       	mov	r15, r25
                     // Add up Bytes for checksum
                     byteSum += dataLength;
 
                     // Reset for next state
                     bytesReceived = 0;
                     state = GET_ADDRESS;
-    7488:	23 e0       	ldi	r18, 0x03	; 3
-    748a:	e2 2e       	mov	r14, r18
-    //TODO Page writing testen
+    7446:	23 e0       	ldi	r18, 0x03	; 3
+    7448:	e2 2e       	mov	r14, r18
+	
+	// Initialize Data Buffer
 	resetDataBuffer();
 	
-    // Wait for starting character
     while(1){
         while(!(c = uart_receive())) ;
-    748c:	0e 94 e7 38 	call	0x71ce	; 0x71ce <uart_receive>
-    7490:	88 23       	and	r24, r24
-    7492:	e1 f3       	breq	.-8      	; 0x748c <main+0x78>
+    744a:	0e 94 e7 38 	call	0x71ce	; 0x71ce <uart_receive>
+    744e:	88 23       	and	r24, r24
+    7450:	e1 f3       	breq	.-8      	; 0x744a <main+0x78>
 
         switch(state){
-    7494:	90 91 00 01 	lds	r25, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
-    7498:	93 30       	cpi	r25, 0x03	; 3
-    749a:	d1 f1       	breq	.+116    	; 0x7510 <main+0xfc>
-    749c:	28 f4       	brcc	.+10     	; 0x74a8 <main+0x94>
-    749e:	91 30       	cpi	r25, 0x01	; 1
-    74a0:	61 f0       	breq	.+24     	; 0x74ba <main+0xa6>
-    74a2:	92 30       	cpi	r25, 0x02	; 2
-    74a4:	a1 f0       	breq	.+40     	; 0x74ce <main+0xba>
-    74a6:	f2 cf       	rjmp	.-28     	; 0x748c <main+0x78>
-    74a8:	95 30       	cpi	r25, 0x05	; 5
-    74aa:	09 f4       	brne	.+2      	; 0x74ae <main+0x9a>
-    74ac:	94 c0       	rjmp	.+296    	; 0x75d6 <main+0x1c2>
-    74ae:	08 f4       	brcc	.+2      	; 0x74b2 <main+0x9e>
-    74b0:	6d c0       	rjmp	.+218    	; 0x758c <main+0x178>
-    74b2:	96 30       	cpi	r25, 0x06	; 6
-    74b4:	09 f4       	brne	.+2      	; 0x74b8 <main+0xa4>
-    74b6:	d7 c0       	rjmp	.+430    	; 0x7666 <main+0x252>
-    74b8:	e9 cf       	rjmp	.-46     	; 0x748c <main+0x78>
+    7452:	90 91 00 01 	lds	r25, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+    7456:	93 30       	cpi	r25, 0x03	; 3
+    7458:	d1 f1       	breq	.+116    	; 0x74ce <main+0xfc>
+    745a:	28 f4       	brcc	.+10     	; 0x7466 <main+0x94>
+    745c:	91 30       	cpi	r25, 0x01	; 1
+    745e:	61 f0       	breq	.+24     	; 0x7478 <main+0xa6>
+    7460:	92 30       	cpi	r25, 0x02	; 2
+    7462:	a1 f0       	breq	.+40     	; 0x748c <main+0xba>
+    7464:	f2 cf       	rjmp	.-28     	; 0x744a <main+0x78>
+    7466:	95 30       	cpi	r25, 0x05	; 5
+    7468:	09 f4       	brne	.+2      	; 0x746c <main+0x9a>
+    746a:	94 c0       	rjmp	.+296    	; 0x7594 <main+0x1c2>
+    746c:	08 f4       	brcc	.+2      	; 0x7470 <main+0x9e>
+    746e:	6d c0       	rjmp	.+218    	; 0x754a <main+0x178>
+    7470:	96 30       	cpi	r25, 0x06	; 6
+    7472:	09 f4       	brne	.+2      	; 0x7476 <main+0xa4>
+    7474:	d7 c0       	rjmp	.+430    	; 0x7624 <main+0x252>
+    7476:	e9 cf       	rjmp	.-46     	; 0x744a <main+0x78>
             case WAIT_FOR_START:
                 if(c == ':'){
-    74ba:	8a 33       	cpi	r24, 0x3A	; 58
-    74bc:	39 f7       	brne	.-50     	; 0x748c <main+0x78>
+    7478:	8a 33       	cpi	r24, 0x3A	; 58
+    747a:	39 f7       	brne	.-50     	; 0x744a <main+0x78>
                     uart_send(':');
-    74be:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
+    747c:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
                     // Reset for next state
                     bytesReceived = 0;
-    74c2:	10 92 e2 01 	sts	0x01E2, r1	; 0x8001e2 <bytesReceived>
+    7480:	10 92 ce 01 	sts	0x01CE, r1	; 0x8001ce <bytesReceived>
                     byteSum = 0;
-    74c6:	10 92 8d 02 	sts	0x028D, r1	; 0x80028d <byteSum>
+    7484:	10 92 78 02 	sts	0x0278, r1	; 0x800278 <byteSum>
                     state = GET_DATA_LENGTH;
-    74ca:	82 e0       	ldi	r24, 0x02	; 2
-    74cc:	5c c0       	rjmp	.+184    	; 0x7586 <main+0x172>
+    7488:	82 e0       	ldi	r24, 0x02	; 2
+    748a:	5c c0       	rjmp	.+184    	; 0x7544 <main+0x172>
                 }    
             break;
             case GET_DATA_LENGTH:
                 hexBuffer[bytesReceived++] = c;
-    74ce:	e0 91 e2 01 	lds	r30, 0x01E2	; 0x8001e2 <bytesReceived>
-    74d2:	91 e0       	ldi	r25, 0x01	; 1
-    74d4:	9e 0f       	add	r25, r30
-    74d6:	90 93 e2 01 	sts	0x01E2, r25	; 0x8001e2 <bytesReceived>
-    74da:	f0 e0       	ldi	r31, 0x00	; 0
-    74dc:	e2 52       	subi	r30, 0x22	; 34
-    74de:	fe 4f       	sbci	r31, 0xFE	; 254
-    74e0:	80 83       	st	Z, r24
+    748c:	e0 91 ce 01 	lds	r30, 0x01CE	; 0x8001ce <bytesReceived>
+    7490:	91 e0       	ldi	r25, 0x01	; 1
+    7492:	9e 0f       	add	r25, r30
+    7494:	90 93 ce 01 	sts	0x01CE, r25	; 0x8001ce <bytesReceived>
+    7498:	f0 e0       	ldi	r31, 0x00	; 0
+    749a:	e6 53       	subi	r30, 0x36	; 54
+    749c:	fe 4f       	sbci	r31, 0xFE	; 254
+    749e:	80 83       	st	Z, r24
                 uart_send(c);
-    74e2:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
+    74a0:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
                 if(bytesReceived == 2){
-    74e6:	80 91 e2 01 	lds	r24, 0x01E2	; 0x8001e2 <bytesReceived>
-    74ea:	82 30       	cpi	r24, 0x02	; 2
-    74ec:	79 f6       	brne	.-98     	; 0x748c <main+0x78>
+    74a4:	80 91 ce 01 	lds	r24, 0x01CE	; 0x8001ce <bytesReceived>
+    74a8:	82 30       	cpi	r24, 0x02	; 2
+    74aa:	79 f6       	brne	.-98     	; 0x744a <main+0x78>
                     // Decode data length
                     dataLength = (uint8_t) hexDec(hexBuffer, 2); 
-    74ee:	62 e0       	ldi	r22, 0x02	; 2
-    74f0:	8e ed       	ldi	r24, 0xDE	; 222
-    74f2:	91 e0       	ldi	r25, 0x01	; 1
-    74f4:	0e 94 e7 39 	call	0x73ce	; 0x73ce <hexDec>
-    74f8:	80 93 8f 02 	sts	0x028F, r24	; 0x80028f <dataLength>
+    74ac:	62 e0       	ldi	r22, 0x02	; 2
+    74ae:	8a ec       	ldi	r24, 0xCA	; 202
+    74b0:	91 e0       	ldi	r25, 0x01	; 1
+    74b2:	0e 94 c6 39 	call	0x738c	; 0x738c <hexDec>
+    74b6:	80 93 7a 02 	sts	0x027A, r24	; 0x80027a <dataLength>
 
                     // Add up Bytes for checksum
                     byteSum += dataLength;
-    74fc:	90 91 8d 02 	lds	r25, 0x028D	; 0x80028d <byteSum>
-    7500:	89 0f       	add	r24, r25
-    7502:	80 93 8d 02 	sts	0x028D, r24	; 0x80028d <byteSum>
+    74ba:	90 91 78 02 	lds	r25, 0x0278	; 0x800278 <byteSum>
+    74be:	89 0f       	add	r24, r25
+    74c0:	80 93 78 02 	sts	0x0278, r24	; 0x800278 <byteSum>
 
                     // Reset for next state
                     bytesReceived = 0;
-    7506:	10 92 e2 01 	sts	0x01E2, r1	; 0x8001e2 <bytesReceived>
+    74c4:	10 92 ce 01 	sts	0x01CE, r1	; 0x8001ce <bytesReceived>
                     state = GET_ADDRESS;
-    750a:	e0 92 00 01 	sts	0x0100, r14	; 0x800100 <__DATA_REGION_ORIGIN__>
-    750e:	be cf       	rjmp	.-132    	; 0x748c <main+0x78>
+    74c8:	e0 92 00 01 	sts	0x0100, r14	; 0x800100 <__DATA_REGION_ORIGIN__>
+    74cc:	be cf       	rjmp	.-132    	; 0x744a <main+0x78>
                 }
             break;
             case GET_ADDRESS:
                 hexBuffer[bytesReceived++] = c;
-    7510:	e0 91 e2 01 	lds	r30, 0x01E2	; 0x8001e2 <bytesReceived>
-    7514:	91 e0       	ldi	r25, 0x01	; 1
-    7516:	9e 0f       	add	r25, r30
-    7518:	90 93 e2 01 	sts	0x01E2, r25	; 0x8001e2 <bytesReceived>
-    751c:	f0 e0       	ldi	r31, 0x00	; 0
-    751e:	e2 52       	subi	r30, 0x22	; 34
-    7520:	fe 4f       	sbci	r31, 0xFE	; 254
-    7522:	80 83       	st	Z, r24
+    74ce:	e0 91 ce 01 	lds	r30, 0x01CE	; 0x8001ce <bytesReceived>
+    74d2:	91 e0       	ldi	r25, 0x01	; 1
+    74d4:	9e 0f       	add	r25, r30
+    74d6:	90 93 ce 01 	sts	0x01CE, r25	; 0x8001ce <bytesReceived>
+    74da:	f0 e0       	ldi	r31, 0x00	; 0
+    74dc:	e6 53       	subi	r30, 0x36	; 54
+    74de:	fe 4f       	sbci	r31, 0xFE	; 254
+    74e0:	80 83       	st	Z, r24
                 uart_send(c);
-    7524:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
+    74e2:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
                 if(bytesReceived == 4){
-    7528:	80 91 e2 01 	lds	r24, 0x01E2	; 0x8001e2 <bytesReceived>
-    752c:	84 30       	cpi	r24, 0x04	; 4
-    752e:	09 f0       	breq	.+2      	; 0x7532 <main+0x11e>
-    7530:	ad cf       	rjmp	.-166    	; 0x748c <main+0x78>
+    74e6:	80 91 ce 01 	lds	r24, 0x01CE	; 0x8001ce <bytesReceived>
+    74ea:	84 30       	cpi	r24, 0x04	; 4
+    74ec:	09 f0       	breq	.+2      	; 0x74f0 <main+0x11e>
+    74ee:	ad cf       	rjmp	.-166    	; 0x744a <main+0x78>
                     // Decode absolute page address
                     pageAddress = hexDec(hexBuffer, 4);
-    7532:	64 e0       	ldi	r22, 0x04	; 4
-    7534:	8e ed       	ldi	r24, 0xDE	; 222
-    7536:	91 e0       	ldi	r25, 0x01	; 1
-    7538:	0e 94 e7 39 	call	0x73ce	; 0x73ce <hexDec>
-    753c:	90 93 8c 02 	sts	0x028C, r25	; 0x80028c <pageAddress+0x1>
-    7540:	80 93 8b 02 	sts	0x028B, r24	; 0x80028b <pageAddress>
+    74f0:	64 e0       	ldi	r22, 0x04	; 4
+    74f2:	8a ec       	ldi	r24, 0xCA	; 202
+    74f4:	91 e0       	ldi	r25, 0x01	; 1
+    74f6:	0e 94 c6 39 	call	0x738c	; 0x738c <hexDec>
+    74fa:	90 93 77 02 	sts	0x0277, r25	; 0x800277 <pageAddress+0x1>
+    74fe:	80 93 76 02 	sts	0x0276, r24	; 0x800276 <pageAddress>
                     
                     // Update Checksum
                     byteSum += (uint8_t) pageAddress;
                     byteSum += (uint8_t) (pageAddress >> 8);
-    7544:	20 91 8d 02 	lds	r18, 0x028D	; 0x80028d <byteSum>
-    7548:	28 0f       	add	r18, r24
-    754a:	29 0f       	add	r18, r25
-    754c:	20 93 8d 02 	sts	0x028D, r18	; 0x80028d <byteSum>
+    7502:	20 91 78 02 	lds	r18, 0x0278	; 0x800278 <byteSum>
+    7506:	28 0f       	add	r18, r24
+    7508:	29 0f       	add	r18, r25
+    750a:	20 93 78 02 	sts	0x0278, r18	; 0x800278 <byteSum>
                     
-                    // Calculate relative page address
+                    // Calculate relative page number
                     uint16_t pageNumber = pageAddress / SPM_PAGESIZE;
-    7550:	ec 01       	movw	r28, r24
-    7552:	cc 0f       	add	r28, r28
-    7554:	cd 2f       	mov	r28, r29
-    7556:	cc 1f       	adc	r28, r28
-    7558:	dd 0b       	sbc	r29, r29
-    755a:	d1 95       	neg	r29
+    750e:	ec 01       	movw	r28, r24
+    7510:	cc 0f       	add	r28, r28
+    7512:	cd 2f       	mov	r28, r29
+    7514:	cc 1f       	adc	r28, r28
+    7516:	dd 0b       	sbc	r29, r29
+    7518:	d1 95       	neg	r29
 
+                    // Flash old page if page number changes
                     if(pageNumber != currentPage){
-    755c:	80 91 dc 01 	lds	r24, 0x01DC	; 0x8001dc <__data_end>
-    7560:	90 91 dd 01 	lds	r25, 0x01DD	; 0x8001dd <__data_end+0x1>
-    7564:	c8 17       	cp	r28, r24
-    7566:	d9 07       	cpc	r29, r25
-    7568:	59 f0       	breq	.+22     	; 0x7580 <main+0x16c>
+    751a:	80 91 c8 01 	lds	r24, 0x01C8	; 0x8001c8 <__data_end>
+    751e:	90 91 c9 01 	lds	r25, 0x01C9	; 0x8001c9 <__data_end+0x1>
+    7522:	c8 17       	cp	r28, r24
+    7524:	d9 07       	cpc	r29, r25
+    7526:	59 f0       	breq	.+22     	; 0x753e <main+0x16c>
                         programFlash();
-    756a:	0e 94 ce 39 	call	0x739c	; 0x739c <programFlash>
+    7528:	0e 94 ad 39 	call	0x735a	; 0x735a <programFlash>
                         currentPage = pageNumber;
-    756e:	d0 93 dd 01 	sts	0x01DD, r29	; 0x8001dd <__data_end+0x1>
-    7572:	c0 93 dc 01 	sts	0x01DC, r28	; 0x8001dc <__data_end>
+    752c:	d0 93 c9 01 	sts	0x01C9, r29	; 0x8001c9 <__data_end+0x1>
+    7530:	c0 93 c8 01 	sts	0x01C8, r28	; 0x8001c8 <__data_end>
 						dataIndex = pageAddress % SPM_PAGESIZE;
-    7576:	80 91 8b 02 	lds	r24, 0x028B	; 0x80028b <pageAddress>
-    757a:	8f 77       	andi	r24, 0x7F	; 127
-    757c:	80 93 e4 01 	sts	0x01E4, r24	; 0x8001e4 <dataIndex>
+    7534:	80 91 76 02 	lds	r24, 0x0276	; 0x800276 <pageAddress>
+    7538:	8f 77       	andi	r24, 0x7F	; 127
+    753a:	80 93 d0 01 	sts	0x01D0, r24	; 0x8001d0 <dataIndex>
                     }
 
                     // Reset for next state
                     bytesReceived = 0;
-    7580:	10 92 e2 01 	sts	0x01E2, r1	; 0x8001e2 <bytesReceived>
+    753e:	10 92 ce 01 	sts	0x01CE, r1	; 0x8001ce <bytesReceived>
                     state = GET_RECORD_TYPE;
-    7584:	84 e0       	ldi	r24, 0x04	; 4
-    7586:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__DATA_REGION_ORIGIN__>
-    758a:	80 cf       	rjmp	.-256    	; 0x748c <main+0x78>
+    7542:	84 e0       	ldi	r24, 0x04	; 4
+    7544:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__DATA_REGION_ORIGIN__>
+    7548:	80 cf       	rjmp	.-256    	; 0x744a <main+0x78>
                 }
             break;
             case GET_RECORD_TYPE:
                 hexBuffer[bytesReceived++] = c;
-    758c:	e0 91 e2 01 	lds	r30, 0x01E2	; 0x8001e2 <bytesReceived>
-    7590:	91 e0       	ldi	r25, 0x01	; 1
-    7592:	9e 0f       	add	r25, r30
-    7594:	90 93 e2 01 	sts	0x01E2, r25	; 0x8001e2 <bytesReceived>
-    7598:	f0 e0       	ldi	r31, 0x00	; 0
-    759a:	e2 52       	subi	r30, 0x22	; 34
-    759c:	fe 4f       	sbci	r31, 0xFE	; 254
-    759e:	80 83       	st	Z, r24
+    754a:	e0 91 ce 01 	lds	r30, 0x01CE	; 0x8001ce <bytesReceived>
+    754e:	91 e0       	ldi	r25, 0x01	; 1
+    7550:	9e 0f       	add	r25, r30
+    7552:	90 93 ce 01 	sts	0x01CE, r25	; 0x8001ce <bytesReceived>
+    7556:	f0 e0       	ldi	r31, 0x00	; 0
+    7558:	e6 53       	subi	r30, 0x36	; 54
+    755a:	fe 4f       	sbci	r31, 0xFE	; 254
+    755c:	80 83       	st	Z, r24
                 uart_send(c);
-    75a0:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
+    755e:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
                 if(bytesReceived == 2){
-    75a4:	80 91 e2 01 	lds	r24, 0x01E2	; 0x8001e2 <bytesReceived>
-    75a8:	82 30       	cpi	r24, 0x02	; 2
-    75aa:	09 f0       	breq	.+2      	; 0x75ae <main+0x19a>
-    75ac:	6f cf       	rjmp	.-290    	; 0x748c <main+0x78>
+    7562:	80 91 ce 01 	lds	r24, 0x01CE	; 0x8001ce <bytesReceived>
+    7566:	82 30       	cpi	r24, 0x02	; 2
+    7568:	09 f0       	breq	.+2      	; 0x756c <main+0x19a>
+    756a:	6f cf       	rjmp	.-290    	; 0x744a <main+0x78>
                     // Decode record type
                     recordType = (uint8_t) hexDec(hexBuffer, 2);
-    75ae:	62 e0       	ldi	r22, 0x02	; 2
-    75b0:	8e ed       	ldi	r24, 0xDE	; 222
-    75b2:	91 e0       	ldi	r25, 0x01	; 1
-    75b4:	0e 94 e7 39 	call	0x73ce	; 0x73ce <hexDec>
-    75b8:	80 93 09 02 	sts	0x0209, r24	; 0x800209 <recordType>
+    756c:	62 e0       	ldi	r22, 0x02	; 2
+    756e:	8a ec       	ldi	r24, 0xCA	; 202
+    7570:	91 e0       	ldi	r25, 0x01	; 1
+    7572:	0e 94 c6 39 	call	0x738c	; 0x738c <hexDec>
+    7576:	80 93 f5 01 	sts	0x01F5, r24	; 0x8001f5 <recordType>
 
                     // Reset for next state
                     byteSum += recordType;
-    75bc:	90 91 8d 02 	lds	r25, 0x028D	; 0x80028d <byteSum>
-    75c0:	98 0f       	add	r25, r24
-    75c2:	90 93 8d 02 	sts	0x028D, r25	; 0x80028d <byteSum>
+    757a:	90 91 78 02 	lds	r25, 0x0278	; 0x800278 <byteSum>
+    757e:	98 0f       	add	r25, r24
+    7580:	90 93 78 02 	sts	0x0278, r25	; 0x800278 <byteSum>
                     bytesReceived = 0;
-    75c6:	10 92 e2 01 	sts	0x01E2, r1	; 0x8001e2 <bytesReceived>
+    7584:	10 92 ce 01 	sts	0x01CE, r1	; 0x8001ce <bytesReceived>
 
                     // Skip GET_DATA state for EOF Records (Type 01)
                     state = (recordType == 1) ? GET_CHECKSUM : GET_DATA;               
-    75ca:	81 30       	cpi	r24, 0x01	; 1
-    75cc:	11 f0       	breq	.+4      	; 0x75d2 <main+0x1be>
-    75ce:	85 e0       	ldi	r24, 0x05	; 5
-    75d0:	da cf       	rjmp	.-76     	; 0x7586 <main+0x172>
-    75d2:	86 e0       	ldi	r24, 0x06	; 6
-    75d4:	d8 cf       	rjmp	.-80     	; 0x7586 <main+0x172>
+    7588:	81 30       	cpi	r24, 0x01	; 1
+    758a:	11 f0       	breq	.+4      	; 0x7590 <main+0x1be>
+    758c:	85 e0       	ldi	r24, 0x05	; 5
+    758e:	da cf       	rjmp	.-76     	; 0x7544 <main+0x172>
+    7590:	86 e0       	ldi	r24, 0x06	; 6
+    7592:	d8 cf       	rjmp	.-80     	; 0x7544 <main+0x172>
                 }
             break;
             case GET_DATA:
                 switch (recordType){
-    75d6:	90 91 09 02 	lds	r25, 0x0209	; 0x800209 <recordType>
-    75da:	91 11       	cpse	r25, r1
-    75dc:	57 cf       	rjmp	.-338    	; 0x748c <main+0x78>
+    7594:	90 91 f5 01 	lds	r25, 0x01F5	; 0x8001f5 <recordType>
+    7598:	91 11       	cpse	r25, r1
+    759a:	57 cf       	rjmp	.-338    	; 0x744a <main+0x78>
                 case DATA_RECORD:
                     hexBuffer[bytesReceived++] = c;
-    75de:	e0 91 e2 01 	lds	r30, 0x01E2	; 0x8001e2 <bytesReceived>
-    75e2:	91 e0       	ldi	r25, 0x01	; 1
-    75e4:	9e 0f       	add	r25, r30
-    75e6:	90 93 e2 01 	sts	0x01E2, r25	; 0x8001e2 <bytesReceived>
-    75ea:	f0 e0       	ldi	r31, 0x00	; 0
-    75ec:	e2 52       	subi	r30, 0x22	; 34
-    75ee:	fe 4f       	sbci	r31, 0xFE	; 254
-    75f0:	80 83       	st	Z, r24
+    759c:	e0 91 ce 01 	lds	r30, 0x01CE	; 0x8001ce <bytesReceived>
+    75a0:	91 e0       	ldi	r25, 0x01	; 1
+    75a2:	9e 0f       	add	r25, r30
+    75a4:	90 93 ce 01 	sts	0x01CE, r25	; 0x8001ce <bytesReceived>
+    75a8:	f0 e0       	ldi	r31, 0x00	; 0
+    75aa:	e6 53       	subi	r30, 0x36	; 54
+    75ac:	fe 4f       	sbci	r31, 0xFE	; 254
+    75ae:	80 83       	st	Z, r24
                     uart_send(c);
-    75f2:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
+    75b0:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
                     if(bytesReceived == 2){
-    75f6:	80 91 e2 01 	lds	r24, 0x01E2	; 0x8001e2 <bytesReceived>
-    75fa:	82 30       	cpi	r24, 0x02	; 2
-    75fc:	09 f0       	breq	.+2      	; 0x7600 <main+0x1ec>
-    75fe:	46 cf       	rjmp	.-372    	; 0x748c <main+0x78>
+    75b4:	80 91 ce 01 	lds	r24, 0x01CE	; 0x8001ce <bytesReceived>
+    75b8:	82 30       	cpi	r24, 0x02	; 2
+    75ba:	09 f0       	breq	.+2      	; 0x75be <main+0x1ec>
+    75bc:	46 cf       	rjmp	.-372    	; 0x744a <main+0x78>
                         // Collect data and add up checksum
                         data[dataIndex] = (uint8_t) hexDec(hexBuffer, 2);
-    7600:	c0 91 e4 01 	lds	r28, 0x01E4	; 0x8001e4 <dataIndex>
-    7604:	62 e0       	ldi	r22, 0x02	; 2
-    7606:	8e ed       	ldi	r24, 0xDE	; 222
-    7608:	91 e0       	ldi	r25, 0x01	; 1
-    760a:	0e 94 e7 39 	call	0x73ce	; 0x73ce <hexDec>
-    760e:	ec 2f       	mov	r30, r28
-    7610:	f0 e0       	ldi	r31, 0x00	; 0
-    7612:	e5 5f       	subi	r30, 0xF5	; 245
-    7614:	fd 4f       	sbci	r31, 0xFD	; 253
-    7616:	80 83       	st	Z, r24
+    75be:	c0 91 d0 01 	lds	r28, 0x01D0	; 0x8001d0 <dataIndex>
+    75c2:	62 e0       	ldi	r22, 0x02	; 2
+    75c4:	8a ec       	ldi	r24, 0xCA	; 202
+    75c6:	91 e0       	ldi	r25, 0x01	; 1
+    75c8:	0e 94 c6 39 	call	0x738c	; 0x738c <hexDec>
+    75cc:	ec 2f       	mov	r30, r28
+    75ce:	f0 e0       	ldi	r31, 0x00	; 0
+    75d0:	ea 50       	subi	r30, 0x0A	; 10
+    75d2:	fe 4f       	sbci	r31, 0xFE	; 254
+    75d4:	80 83       	st	Z, r24
                         byteSum += data[dataIndex];
-    7618:	90 91 8d 02 	lds	r25, 0x028D	; 0x80028d <byteSum>
-    761c:	89 0f       	add	r24, r25
-    761e:	80 93 8d 02 	sts	0x028D, r24	; 0x80028d <byteSum>
+    75d6:	90 91 78 02 	lds	r25, 0x0278	; 0x800278 <byteSum>
+    75da:	89 0f       	add	r24, r25
+    75dc:	80 93 78 02 	sts	0x0278, r24	; 0x800278 <byteSum>
                         
                         currentDataLength++;	
-    7622:	80 91 e3 01 	lds	r24, 0x01E3	; 0x8001e3 <currentDataLength>
-    7626:	8f 5f       	subi	r24, 0xFF	; 255
-    7628:	80 93 e3 01 	sts	0x01E3, r24	; 0x8001e3 <currentDataLength>
+    75e0:	80 91 cf 01 	lds	r24, 0x01CF	; 0x8001cf <currentDataLength>
+    75e4:	8f 5f       	subi	r24, 0xFF	; 255
+    75e6:	80 93 cf 01 	sts	0x01CF, r24	; 0x8001cf <currentDataLength>
 						dataIndex++;
-    762c:	cf 5f       	subi	r28, 0xFF	; 255
-    762e:	c0 93 e4 01 	sts	0x01E4, r28	; 0x8001e4 <dataIndex>
+    75ea:	cf 5f       	subi	r28, 0xFF	; 255
+    75ec:	c0 93 d0 01 	sts	0x01D0, r28	; 0x8001d0 <dataIndex>
 						
 						bytesReceived = 0;
-    7632:	10 92 e2 01 	sts	0x01E2, r1	; 0x8001e2 <bytesReceived>
+    75f0:	10 92 ce 01 	sts	0x01CE, r1	; 0x8001ce <bytesReceived>
 						
 						if (dataIndex == 128) {
-    7636:	c0 38       	cpi	r28, 0x80	; 128
-    7638:	59 f4       	brne	.+22     	; 0x7650 <main+0x23c>
+    75f4:	c0 38       	cpi	r28, 0x80	; 128
+    75f6:	59 f4       	brne	.+22     	; 0x760e <main+0x23c>
 							programFlash();
-    763a:	0e 94 ce 39 	call	0x739c	; 0x739c <programFlash>
+    75f8:	0e 94 ad 39 	call	0x735a	; 0x735a <programFlash>
 							currentPage++;
-    763e:	80 91 dc 01 	lds	r24, 0x01DC	; 0x8001dc <__data_end>
-    7642:	90 91 dd 01 	lds	r25, 0x01DD	; 0x8001dd <__data_end+0x1>
-    7646:	01 96       	adiw	r24, 0x01	; 1
-    7648:	90 93 dd 01 	sts	0x01DD, r25	; 0x8001dd <__data_end+0x1>
-    764c:	80 93 dc 01 	sts	0x01DC, r24	; 0x8001dc <__data_end>
+    75fc:	80 91 c8 01 	lds	r24, 0x01C8	; 0x8001c8 <__data_end>
+    7600:	90 91 c9 01 	lds	r25, 0x01C9	; 0x8001c9 <__data_end+0x1>
+    7604:	01 96       	adiw	r24, 0x01	; 1
+    7606:	90 93 c9 01 	sts	0x01C9, r25	; 0x8001c9 <__data_end+0x1>
+    760a:	80 93 c8 01 	sts	0x01C8, r24	; 0x8001c8 <__data_end>
 						}
 						
                         if(currentDataLength == dataLength){
-    7650:	90 91 e3 01 	lds	r25, 0x01E3	; 0x8001e3 <currentDataLength>
-    7654:	80 91 8f 02 	lds	r24, 0x028F	; 0x80028f <dataLength>
-    7658:	98 13       	cpse	r25, r24
-    765a:	18 cf       	rjmp	.-464    	; 0x748c <main+0x78>
-                            // Go to the next state
+    760e:	90 91 cf 01 	lds	r25, 0x01CF	; 0x8001cf <currentDataLength>
+    7612:	80 91 7a 02 	lds	r24, 0x027A	; 0x80027a <dataLength>
+    7616:	98 13       	cpse	r25, r24
+    7618:	18 cf       	rjmp	.-464    	; 0x744a <main+0x78>
 							currentDataLength = 0;
-    765c:	10 92 e3 01 	sts	0x01E3, r1	; 0x8001e3 <currentDataLength>
+    761a:	10 92 cf 01 	sts	0x01CF, r1	; 0x8001cf <currentDataLength>
                             state = GET_CHECKSUM;
-    7660:	00 93 00 01 	sts	0x0100, r16	; 0x800100 <__DATA_REGION_ORIGIN__>
-    7664:	13 cf       	rjmp	.-474    	; 0x748c <main+0x78>
+    761e:	00 93 00 01 	sts	0x0100, r16	; 0x800100 <__DATA_REGION_ORIGIN__>
+    7622:	13 cf       	rjmp	.-474    	; 0x744a <main+0x78>
                 default:
                     break;
                 }
             break;
             case GET_CHECKSUM:
                 hexBuffer[bytesReceived++] = c;
-    7666:	e0 91 e2 01 	lds	r30, 0x01E2	; 0x8001e2 <bytesReceived>
-    766a:	91 e0       	ldi	r25, 0x01	; 1
-    766c:	9e 0f       	add	r25, r30
-    766e:	90 93 e2 01 	sts	0x01E2, r25	; 0x8001e2 <bytesReceived>
-    7672:	f0 e0       	ldi	r31, 0x00	; 0
-    7674:	e2 52       	subi	r30, 0x22	; 34
-    7676:	fe 4f       	sbci	r31, 0xFE	; 254
-    7678:	80 83       	st	Z, r24
+    7624:	e0 91 ce 01 	lds	r30, 0x01CE	; 0x8001ce <bytesReceived>
+    7628:	91 e0       	ldi	r25, 0x01	; 1
+    762a:	9e 0f       	add	r25, r30
+    762c:	90 93 ce 01 	sts	0x01CE, r25	; 0x8001ce <bytesReceived>
+    7630:	f0 e0       	ldi	r31, 0x00	; 0
+    7632:	e6 53       	subi	r30, 0x36	; 54
+    7634:	fe 4f       	sbci	r31, 0xFE	; 254
+    7636:	80 83       	st	Z, r24
                 uart_send(c);
-    767a:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
+    7638:	0e 94 59 38 	call	0x70b2	; 0x70b2 <uart_send>
                 if(bytesReceived == 2){
-    767e:	80 91 e2 01 	lds	r24, 0x01E2	; 0x8001e2 <bytesReceived>
-    7682:	82 30       	cpi	r24, 0x02	; 2
-    7684:	09 f0       	breq	.+2      	; 0x7688 <main+0x274>
-    7686:	02 cf       	rjmp	.-508    	; 0x748c <main+0x78>
+    763c:	80 91 ce 01 	lds	r24, 0x01CE	; 0x8001ce <bytesReceived>
+    7640:	82 30       	cpi	r24, 0x02	; 2
+    7642:	09 f0       	breq	.+2      	; 0x7646 <main+0x274>
+    7644:	02 cf       	rjmp	.-508    	; 0x744a <main+0x78>
                     checksum = (uint8_t) hexDec(hexBuffer, 2);
-    7688:	62 e0       	ldi	r22, 0x02	; 2
-    768a:	8e ed       	ldi	r24, 0xDE	; 222
-    768c:	91 e0       	ldi	r25, 0x01	; 1
-    768e:	0e 94 e7 39 	call	0x73ce	; 0x73ce <hexDec>
-    7692:	80 93 8e 02 	sts	0x028E, r24	; 0x80028e <checksum>
+    7646:	62 e0       	ldi	r22, 0x02	; 2
+    7648:	8a ec       	ldi	r24, 0xCA	; 202
+    764a:	91 e0       	ldi	r25, 0x01	; 1
+    764c:	0e 94 c6 39 	call	0x738c	; 0x738c <hexDec>
+    7650:	80 93 79 02 	sts	0x0279, r24	; 0x800279 <checksum>
                     
                     // Calculate checksum -> build 2th's complement and check for equality
                     byteSum = ~byteSum + 1;
-    7696:	90 91 8d 02 	lds	r25, 0x028D	; 0x80028d <byteSum>
-    769a:	91 95       	neg	r25
-    769c:	90 93 8d 02 	sts	0x028D, r25	; 0x80028d <byteSum>
+    7654:	90 91 78 02 	lds	r25, 0x0278	; 0x800278 <byteSum>
+    7658:	91 95       	neg	r25
+    765a:	90 93 78 02 	sts	0x0278, r25	; 0x800278 <byteSum>
 					
 					if(byteSum != checksum){
-    76a0:	89 17       	cp	r24, r25
-    76a2:	31 f0       	breq	.+12     	; 0x76b0 <main+0x29c>
+    765e:	89 17       	cp	r24, r25
+    7660:	31 f0       	breq	.+12     	; 0x766e <main+0x29c>
 						sendString("Checksum mismatch. Please Reset!");
-    76a4:	8a eb       	ldi	r24, 0xBA	; 186
-    76a6:	91 e0       	ldi	r25, 0x01	; 1
-    76a8:	0e 94 12 39 	call	0x7224	; 0x7224 <sendString>
+    7662:	87 ea       	ldi	r24, 0xA7	; 167
+    7664:	91 e0       	ldi	r25, 0x01	; 1
+    7666:	0e 94 12 39 	call	0x7224	; 0x7224 <sendString>
 						state = CHECKSUM_ERROR;
-    76ac:	f0 92 00 01 	sts	0x0100, r15	; 0x800100 <__DATA_REGION_ORIGIN__>
+    766a:	f0 92 00 01 	sts	0x0100, r15	; 0x800100 <__DATA_REGION_ORIGIN__>
 					}
 					
 					if(recordType == EOF_RECORD){
-    76b0:	80 91 09 02 	lds	r24, 0x0209	; 0x800209 <recordType>
-    76b4:	81 30       	cpi	r24, 0x01	; 1
-    76b6:	39 f4       	brne	.+14     	; 0x76c6 <main+0x2b2>
+    766e:	80 91 f5 01 	lds	r24, 0x01F5	; 0x8001f5 <recordType>
+    7672:	81 30       	cpi	r24, 0x01	; 1
+    7674:	41 f4       	brne	.+16     	; 0x7686 <main+0x2b4>
 						// If dataIndex == 0 -> page is empty -> no need to flash
 						if(dataIndex != 0){
-    76b8:	80 91 e4 01 	lds	r24, 0x01E4	; 0x8001e4 <dataIndex>
-    76bc:	81 11       	cpse	r24, r1
+    7676:	80 91 d0 01 	lds	r24, 0x01D0	; 0x8001d0 <dataIndex>
+    767a:	88 23       	and	r24, r24
+    767c:	09 f4       	brne	.+2      	; 0x7680 <main+0x2ae>
+    767e:	d3 ce       	rjmp	.-602    	; 0x7426 <main+0x54>
 							programFlash();
-    76be:	0e 94 ce 39 	call	0x739c	; 0x739c <programFlash>
+    7680:	0e 94 ad 39 	call	0x735a	; 0x735a <programFlash>
+    7684:	d0 ce       	rjmp	.-608    	; 0x7426 <main+0x54>
 						} 
 						runProgram();
-    76c2:	0e 94 4e 39 	call	0x729c	; 0x729c <runProgram>
 					}
                     
                     bytesReceived = 0;
-    76c6:	10 92 e2 01 	sts	0x01E2, r1	; 0x8001e2 <bytesReceived>
+    7686:	10 92 ce 01 	sts	0x01CE, r1	; 0x8001ce <bytesReceived>
                     state = WAIT_FOR_START;
-    76ca:	10 93 00 01 	sts	0x0100, r17	; 0x800100 <__DATA_REGION_ORIGIN__>
+    768a:	10 93 00 01 	sts	0x0100, r17	; 0x800100 <__DATA_REGION_ORIGIN__>
                     sendCRLF();
-    76ce:	0e 94 0c 39 	call	0x7218	; 0x7218 <sendCRLF>
-    76d2:	dc ce       	rjmp	.-584    	; 0x748c <main+0x78>
+    768e:	0e 94 0c 39 	call	0x7218	; 0x7218 <sendCRLF>
+    7692:	db ce       	rjmp	.-586    	; 0x744a <main+0x78>
 
-000076d4 <_exit>:
-    76d4:	f8 94       	cli
+00007694 <_exit>:
+    7694:	f8 94       	cli
 
-000076d6 <__stop_program>:
-    76d6:	ff cf       	rjmp	.-2      	; 0x76d6 <__stop_program>
+00007696 <__stop_program>:
+    7696:	ff cf       	rjmp	.-2      	; 0x7696 <__stop_program>

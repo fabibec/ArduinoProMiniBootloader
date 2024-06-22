@@ -6,6 +6,7 @@
 #include <avr/boot.h>
 #include <util/delay.h>
 #include <avr/common.h>
+#include <avr/pgmspace.h>
 #include "uart.h"
 
 #define WAIT_FOR_START 1
@@ -20,18 +21,21 @@
 #define EOF_RECORD 1
 
 /* This functions resets everything to the default state and starts the program */
-void runProgram(); //__attribute__((noreturn));
+void runProgram();
+
 /* Converts 4-Byte Hex String into uint16_t and 2-Byte Hex String into uint8_t */
 uint16_t hexDec(uint8_t *bytes, uint8_t num);
 
+/* Wrapper for flasinh a page into memory*/
 void programFlash();
+
 /* Write page into program flash */
 void boot_program_page(uint16_t page, uint8_t *buf);
 
+/* Reset every cell of the data buffer to contain 0xFF */
 void resetDataBuffer();
 
-
-/* This Timer runs 4sec in order to signal a the timeout*/
+/* This Timer runs 4 seconds in order to signal a the timeout*/
 ISR(TIMER1_OVF_vect){
     runProgram();
 }
@@ -53,28 +57,32 @@ uint8_t dataIndex = 0;
 uint8_t currentDataLength = 0;
 uint8_t checksum;
 
+/* local received byte counter */
 uint8_t bytesReceived = 0;
+/* temporary buffer for hex string to decimal conversion */
 uint8_t hexBuffer[4] = {0};
+/* variable to calculate the checksum*/
 uint8_t byteSum;
+/* state of the parser automata */
 uint8_t state = WAIT_FOR_START;
 
+/* number of the page that is currently filled */
 uint16_t currentPage = 0;
-uint8_t sregTemp;
 
 int main(){
     // Disable interrupts just to be sure
     cli();
 
-    // Activate the Bootloader IV
+    // Activate the bootloader Interrupt Vectors
     uint8_t temp = MCUCR;
     MCUCR = temp | (1<<IVCE);
     MCUCR = temp | (1<<IVSEL);
 
     // Setup UART
     uart_init();
-    sendString("Arduino ProMiniBootloader by Fabian Becker & Florian Remberger");
+    sendString("Arduino Pro Mini Bootloader by Fabian Becker & Florian Remberger");
     sendCRLF();
-    sendString("<p> -> flashing mode | <any other key> -> continue to the application");
+    sendString("<p> -> flashing mode | <any key> -> return to application");
     sendCRLF();
 
     // Setup Timer1 to run (4 secs.) -> prescaler 1024
@@ -101,11 +109,8 @@ int main(){
     sendCRLF();
 	
 	// Initialize Data Buffer
-
-    //TODO Page writing testen
 	resetDataBuffer();
 	
-    // Wait for starting character
     while(1){
         while(!(c = uart_receive())) ;
 
@@ -145,9 +150,10 @@ int main(){
                     byteSum += (uint8_t) pageAddress;
                     byteSum += (uint8_t) (pageAddress >> 8);
                     
-                    // Calculate relative page address
+                    // Calculate relative page number
                     uint16_t pageNumber = pageAddress / SPM_PAGESIZE;
 
+                    // Flash old page if page number changes
                     if(pageNumber != currentPage){
                         programFlash();
                         currentPage = pageNumber;
@@ -195,7 +201,6 @@ int main(){
 						}
 						
                         if(currentDataLength == dataLength){
-                            // Go to the next state
 							currentDataLength = 0;
                             state = GET_CHECKSUM;
                         }
@@ -241,30 +246,23 @@ int main(){
 }
 
 void runProgram(){
+    // clear timer
     TCCR1B = 0x0;
+    TCNT1 = 0x0;
+    TIMSK1 = 0x0;
 	
-	//Move back to the normal IV
+	//Move back to the normal Interrupt vector
 	MCUCR = (1<<IVCE);
 	MCUCR = 0;
 
     // Disable interrupts
 	cli();
-
-    int8_t ivec = MCUCR & (1 << IVSEL);
-    if (!ivec){
-		PORTB |= (1 << DDB0);
-	}
-
-    // Reset Timer
-    TCNT1 = 0x0;
-    TIMSK1 = 0x0;
 	
     // Reset Uart
     uart_deinit();
 	
     // Jump into the program
-    void (*start)( void ) = 0x0000;
-    start();
+    goto*(0x0);
 }
 
 void programFlash(){
@@ -286,12 +284,16 @@ void boot_program_page(uint16_t page, uint8_t *buf){
     // Because we calculate pageNumbers we need to get the corresponding address
     page = page * SPM_PAGESIZE;
     uint8_t sreg;
-    // Disable interrupts.
+
+    // Disable interrupts
     sreg = SREG;
     cli();
+
+    // Wait until the memory is erased
     eeprom_busy_wait();
     boot_page_erase(page);
-    boot_spm_busy_wait();      // Wait until the memory is erased.
+    boot_spm_busy_wait();      
+
     for(uint8_t i = 0 ; i < SPM_PAGESIZE; i += 2){
         // Set up little-endian word.
         uint16_t w = *buf++;
@@ -299,10 +301,13 @@ void boot_program_page(uint16_t page, uint8_t *buf){
     
         boot_page_fill (page + i, w);
     }
-    boot_page_write(page);     // Store buffer in flash page.
-    boot_spm_busy_wait();       // Wait until the memory is written.
+
+    // Store buffer in flash page
+    boot_page_write(page);
+    // Wait until the memory is written     
+    boot_spm_busy_wait();       
     // Reenable RWW-section again. We need this if we want to jump back
-    // to the application after bootloading.
+    // to the application after bootloading
     boot_rww_enable();
     // Re-enable interrupts (if they were ever enabled).
     SREG = sreg;
