@@ -1,6 +1,6 @@
 # ArduinoProMiniBootloader
 
-This is the final project of our embedded system course. It's a bootloader that is able to program the Arduino Pro Mini via the USART and RS232 interface. 
+This is the final project of our embedded systems course. It's a bootloader that is able to program the Arduino Pro Mini via the USART and RS232 interface. 
 
 ## Building
 
