@@ -10,6 +10,12 @@ Just use the included [Makefile](Makefile), it also contains the ability to flas
 
 This bootloader was build in raw AVR C.
 
+## Statechart
+
+The bootloader is implemented as a state machine. The astah file can be found here: [Statechart](./etc/Bootloader.asta)
+
+![Statechart](./etc/Bootloader.png)
+
 ## Authors
 
   - **Fabian Becker**
